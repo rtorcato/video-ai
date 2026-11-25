@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000;font-family:"Inter Display","Inter",sans-serif;-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+.bg{position:absolute;inset:0}
+#bgPurple{background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.28),transparent 55%),linear-gradient(135deg,#5b5cf0 0%,#7c5cf5 45%,#c26bd6 100%)}
+#bgBlue{background:radial-gradient(ellipse at 45% 35%,rgba(255,255,255,.32),transparent 55%),linear-gradient(160deg,#4f7cf7 0%,#6f78f6 55%,#9a6df2 100%)}
+#bgGreen{background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.35),transparent 55%),linear-gradient(170deg,#2fae86 0%,#5cc79f 55%,#8fdcc0 100%)}
+.scene{position:absolute;inset:0;will-change:filter,opacity}
+.card{position:absolute;background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(40,20,120,.28),0 4px 12px rgba(40,20,120,.12)}
+.dots{display:flex;gap:7px;margin-bottom:14px}
+.dots i{width:11px;height:11px;border-radius:50%;display:block}
+.tc{width:420px;height:200px;padding:20px 26px}
+.tc .row{display:flex;align-items:center;gap:14px}
+.tc .ic{width:40px;height:40px;border-radius:50%;border:5px solid}
+.tc h3{font-size:30px;font-weight:800;letter-spacing:-.02em;color:#141420}
+.tc p{font-size:19px;color:#5b5f72;font-weight:500;margin-top:1px}
+.tc .bar{height:10px;border-radius:6px;background:#eceef5;margin-top:26px;overflow:hidden}
+.tc .bar b{display:block;height:100%;border-radius:6px;width:0}
+.tc .st{position:absolute;right:24px;bottom:16px;font-size:17px;font-weight:800;padding:4px 12px;border-radius:999px}
+.pill{position:absolute;background:#ffd43b;color:#16161d;font-weight:850;font-size:62px;letter-spacing:-.035em;padding:6px 26px 10px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);white-space:nowrap}
+.pill.w{background:#fff}
+.tile{position:absolute;width:290px;height:290px;border-radius:44px;background:linear-gradient(150deg,#ffffff 0%,#e9e4ff 100%);border:6px solid rgba(255,255,255,.9);box-shadow:inset 0 -18px 40px rgba(120,90,240,.25),0 30px 60px rgba(40,20,120,.3);display:flex;align-items:center;justify-content:center;font-size:160px;font-family:"Noto Color Emoji"}
+.tile .n{position:absolute;top:18px;left:20px;font:800 24px "Inter Display";color:#fff;background:#e8590c;border-radius:999px;padding:3px 12px}
+.chk{position:absolute;width:780px;height:120px;border-radius:24px;display:flex;align-items:center;gap:26px;padding:0 30px}
+.chk .b{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 32px "Inter Display";flex:none}
+.chk h4{font-size:40px;font-weight:850;letter-spacing:-.03em}
+.chk p{font-size:21px;font-weight:600;margin-top:2px}
+.pc{position:absolute;width:330px;height:380px;overflow:hidden}
+.pc .hd{height:70px;display:flex;align-items:center;justify-content:center;font:800 26px "Inter Display";color:#1b1b25;background:#f6f7f9;letter-spacing:.02em}
+.pc .em{width:150px;height:150px;margin:28px auto 0;border-radius:36px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font:90px "Noto Color Emoji"}
+.pc h5{text-align:center;font-size:46px;font-weight:900;letter-spacing:-.04em;margin-top:18px;color:#14141c}
+.pc .lb{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);font:900 20px "Inter Display";letter-spacing:.08em;color:#1f9d6f;border:3px solid #1f9d6f;border-radius:8px;padding:3px 12px;background:#fff;white-space:nowrap}
+</style></head>
+<body>
+<div class="bg" id="bgPurple"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgGreen"></div>
+
+<!-- SCENE 1: You + task cards -->
+<div class="scene" id="s1">
+  <svg class="abs" width="1920" height="1080" style="left:0;top:0"><g id="lines" stroke="rgba(255,255,255,.75)" stroke-width="4" fill="none" stroke-linecap="round"></g></svg>
+  <div id="you" class="abs" style="left:810px;top:390px;width:300px;height:300px;border-radius:50%;background:#fff;box-shadow:0 0 0 14px rgba(255,255,255,.35),0 30px 70px rgba(40,20,120,.35);display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-size:96px;font-weight:900;letter-spacing:-.05em;color:#121218;line-height:1">You</div>
+    <div id="cnt" style="font-size:26px;font-weight:700;color:#5b5f72;margin-top:6px">0 of 4 done</div>
+  </div>
+</div>
+
+<!-- SCENE 2: skills tiles -->
+<div class="scene" id="s2">
+  <div id="t2" class="abs" style="left:0;width:1920px;top:150px;text-align:center;font-size:110px;font-weight:900;letter-spacing:-.05em;color:#fff;text-shadow:0 8px 30px rgba(40,20,120,.35)"><span style="color:#ffd43b">3</span> skills to master</div>
+  <div class="tile" id="k0" style="left:455px;top:400px"><span class="n">01</span>⏰</div>
+  <div class="tile" id="k1" style="left:815px;top:400px"><span class="n">02</span>🛠️</div>
+  <div class="tile" id="k2" style="left:1175px;top:400px"><span class="n">03</span>👑</div>
+  <div class="pill" id="p2" style="left:960px;top:800px">Starting with skill one.</div>
+</div>
+
+<!-- SCENE 3: split screen + checklist -->
+<div class="scene" id="s3">
+  <div id="bigword" class="abs" style="top:760px;left:0;font-size:340px;font-weight:900;letter-spacing:-.05em;color:rgba(255,255,255,.16);white-space:nowrap">SKILL ONE</div>
+  <div id="cam" class="abs" style="left:60px;top:90px;width:780px;height:900px;border-radius:30px;overflow:hidden;background:radial-gradient(ellipse at 70% 20%,rgba(160,110,255,.45),transparent 60%),linear-gradient(170deg,#262b3d,#16182a);box-shadow:0 30px 70px rgba(20,10,80,.45);border:4px solid rgba(255,255,255,.55)">
+    <div class="abs" style="left:290px;top:250px;width:200px;height:230px;border-radius:50%;background:#3b4157"></div>
+    <div class="abs" style="left:150px;top:500px;width:480px;height:460px;border-radius:200px 200px 0 0;background:#3b4157"></div>
+    <div class="abs" style="left:30px;top:30px;font:700 24px 'Inter Display';color:#fff;background:rgba(0,0,0,.4);padding:8px 16px;border-radius:12px"><span id="rec" style="color:#ff4d4f">●</span> Your camera here</div>
+  </div>
+  <div class="card" id="hd3" style="left:920px;top:90px;width:620px;height:250px;padding:34px 40px">
+    <div style="font-size:24px;font-weight:800;color:#3d4152;letter-spacing:.04em">• SKILL 1 OF 3</div>
+    <div style="font-size:64px;font-weight:900;letter-spacing:-.045em;line-height:1.02;margin-top:12px;color:#111">Wake up to<br><span style="color:#4263eb">finished work</span></div>
+  </div>
+  <div class="tile" id="clk" style="left:1580px;top:90px;width:250px;height:250px;font-size:140px"><span class="n" style="background:#4263eb">01</span>⏰</div>
+  <div id="rows"></div>
+</div>
+
+<!-- SCENE 4: green, product cards -->
+<div class="scene" id="s4">
+  <div class="abs" id="h4" style="left:0;width:1920px;top:90px;text-align:center;font-size:30px;font-weight:800;letter-spacing:.12em;color:rgba(255,255,255,.95)">• THE LAST FEW MONTHS</div>
+  <div id="pcs"></div>
+  <div class="pill" id="p4" style="left:960px;top:780px">Personal agents</div>
+  <div class="abs" id="lit" style="left:0;width:1920px;top:890px;text-align:center;font-size:120px;font-weight:900;letter-spacing:-.05em;color:#fff;text-shadow:0 10px 30px rgba(0,60,40,.3)">Everywhere.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,s,d)=>clamp((t-s)/d);
+const eo=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const spr=x=>x<=0?0:x>=1?1:1-Math.exp(-6*x)*Math.cos(8.5*x);
+const lerp=(a,b,x)=>a+(b-a)*x;
+
+// ---- build scene 1 cards
+const tasks=[
+ {t:"Research",s:"Top 5 AI tools report",c:"#3b5bdb",x:250,y:180},
+ {t:"Inbox",s:"Draft 12 replies",c:"#e64980",x:250,y:700},
+ {t:"Calendar",s:"Plan next week",c:"#f76707",x:1250,y:180},
+ {t:"Money",s:"Budget template",c:"#f59f00",x:1250,y:700},
+];
+const s1=$("s1"), lines=$("lines");
+tasks.forEach((k,i)=>{
+  const d=document.createElement("div");d.className="card tc";d.id="tc"+i;
+  d.style.left=k.x+"px";d.style.top=k.y+"px";
+  d.innerHTML=`<div class="dots"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+  <div class="row"><div class="ic" style="border-color:${k.c}"></div><div><h3>${k.t}</h3><p>${k.s}</p></div></div>
+  <div class="bar"><b style="background:${k.c}"></b></div><div class="st"></div>`;
+  s1.appendChild(d);
+  const cx=k.x+210, cy=k.y+100;
+  const l=document.createElementNS("http://www.w3.org/2000/svg","line");
+  l.setAttribute("x1",960);l.setAttribute("y1",540);l.setAttribute("x2",cx);l.setAttribute("y2",cy);
+  const len=Math.hypot(cx-960,cy-540);l.setAttribute("stroke-dasharray",len);l.dataset.len=len;
+  lines.appendChild(l);
+});
+// ---- scene 3 rows
+const rows=[["Hand off the job","Give it the whole task"],["Close the app","No need to watch it"],["Go do other things","It keeps working"]];
+rows.forEach((r,i)=>{
+  const d=document.createElement("div");d.className="chk";d.id="r"+i;
+  d.style.left="960px";d.style.top=(400+i*150)+"px";
+  d.innerHTML=`<div class="b">${i+1}</div><div><h4>${r[0]}</h4><p>${r[1]}</p></div>`;
+  $("s3").appendChild(d);
+});
+// ---- scene 4 cards
+const prods=[["ATLAS","🤖","Atlas"],["NIMBUS","🧠","Nimbus"],["ORBIT","🛰️","Orbit"],["PULSE","⚡","Pulse"]];
+prods.forEach((p,i)=>{
+  const d=document.createElement("div");d.className="card pc";d.id="pc"+i;
+  d.style.left=(250+i*370)+"px";d.style.top="230px";
+  d.innerHTML=`<div class="hd">${p[0]}</div><div class="em">${p[1]}</div><h5>${p[2]}</h5><div class="lb">LAUNCHED</div>`;
+  $("s4").appendChild(d);
+});
+
+function sceneVis(el,t,a,b){
+  // blur-dissolve in at a, out at b
+  const i=eo(P(t,a,.45)), o=1-eio(P(t,b-.45,.45));
+  const v=Math.min(i,o);
+  el.style.opacity=v; el.style.filter=v>=0.999?"none":`blur(${(1-v)*22}px)`;
+  el.style.display=v<=0.001?"none":"block";
+  return v;
+}
+function pillWipe(el,t,s){
+  const x=eo(P(t,s,.4)), sc=spr(P(t,s,.6));
+  el.style.clipPath=`inset(0 ${(1-x)*100}% 0 0 round 14px)`;
+  el.style.transform=`translateX(-50%) rotate(-1.5deg) scale(${lerp(.9,1,sc)})`;
+  el.style.opacity=x>0?1:0;
+}
+
+window.DURATION=18.4;
+window.render=function(t){
+  // backgrounds
+  const toBlue=eio(P(t,8.3,.8)), toGreen=eio(P(t,13.3,.8));
+  $("bgPurple").style.opacity=1; $("bgBlue").style.opacity=toBlue; $("bgGreen").style.opacity=toGreen;
+
+  // ---- scene 1 (0 - 4.8)
+  sceneVis($("s1"),t,-1,4.8);
+  const y=spr(P(t,.1,.8));
+  $("you").style.transform=`scale(${y})`;
+  lines.querySelectorAll("line").forEach((l,i)=>{
+    const p=eio(P(t,.5+i*.08,.6)); l.setAttribute("stroke-dashoffset",l.dataset.len*(1-p));
+  });
+  let done=0;
+  tasks.forEach((k,i)=>{
+    const el=$("tc"+i), s=spr(P(t,.6+i*.15,.9));
+    const fromX=(k.x<960?-1:1)*120;
+    el.style.opacity=clamp(P(t,.6+i*.15,.25));
+    el.style.transform=`translateX(${(1-s)*fromX}px) scale(${lerp(.85,1,s)})`;
+    const fs=1.4+i*.4, f=eio(P(t,fs,1.3));
+    el.querySelector(".bar b").style.width=(f*100)+"%";
+    const st=el.querySelector(".st");
+    if(f>=1){done++;st.textContent="✓ Done";st.style.background="#d3f9d8";st.style.color="#2b8a3e";
+      const pop=spr(P(t,fs+1.3,.4)); st.style.transform=`scale(${lerp(.6,1,pop)})`;}
+    else {st.textContent="Working";st.style.background="#fff3bf";st.style.color="#b7791f";st.style.transform="none";}
+  });
+  $("cnt").textContent=`${done} of 4 done`;
+
+  // ---- scene 2 (4.5 - 8.7)
+  sceneVis($("s2"),t,4.5,8.7);
+  const tt=eo(P(t,4.7,.6));
+  $("t2").style.opacity=tt; $("t2").style.transform=`translateY(${(1-tt)*40}px)`;
+  [0,1,2].forEach(i=>{
+    const s=spr(P(t,5.2+i*.25,.9)), el=$("k"+i);
+    const float=Math.sin((t-5)*2+i)*6;
+    let dim=1;
+    if(i>0) dim=1-.55*eio(P(t,7.2,.5));
+    el.style.opacity=clamp(P(t,5.2+i*.25,.2))*dim;
+    el.style.transform=`translateY(${(1-s)*120+float}px) scale(${lerp(.5,1,s)*(i===0?lerp(1,1.08,eio(P(t,7.2,.5))):lerp(1,.92,eio(P(t,7.2,.5))))}) rotate(${(1-s)*(i-1)*12}deg)`;
+  });
+  pillWipe($("p2"),t,7.4);
+
+  // ---- scene 3 (8.4 - 13.7)
+  sceneVis($("s3"),t,8.4,13.7);
+  $("bigword").style.transform=`translateX(${lerp(260,-120,P(t,8.4,5.3))}px)`;
+  const c=spr(P(t,8.6,.9));
+  $("cam").style.transform=`translateX(${(1-c)*-900}px)`;
+  $("rec").style.opacity=(Math.floor(t*2)%2)?1:.25;
+  const h=spr(P(t,9.0,.8));
+  $("hd3").style.opacity=clamp(P(t,9.0,.2)); $("hd3").style.transform=`translateY(${(1-h)*-60}px)`;
+  const ck=spr(P(t,9.25,.8));
+  $("clk").style.opacity=clamp(P(t,9.25,.2)); $("clk").style.transform=`scale(${lerp(.4,1,ck)}) rotate(${(1-ck)*-20}deg)`;
+  rows.forEach((r,i)=>{
+    const el=$("r"+i), a=spr(P(t,9.6+i*.15,.8));
+    el.style.opacity=clamp(P(t,9.6+i*.15,.25));
+    el.style.transform=`translateX(${(1-a)*80}px)`;
+    const on=P(t,10.7+i*.9,.35), onS=spr(P(t,10.7+i*.9,.6));
+    const b=el.querySelector(".b");
+    if(on>0){
+      el.style.background=`rgba(255,255,255,${lerp(.22,1,on)})`;
+      el.style.boxShadow=`0 ${20*on}px ${50*on}px rgba(30,20,110,${.25*on})`;
+      b.textContent="✓"; b.style.background="#2f9e44"; b.style.color="#fff"; b.style.fontSize="40px";
+      b.style.transform=`scale(${lerp(.3,1,onS)})`;
+      el.querySelector("h4").style.color=`rgb(${lerp(255,17,on)},${lerp(255,17,on)},${lerp(255,24,on)})`;
+      el.querySelector("p").style.color=`rgba(70,74,92,${lerp(.0,1,on)})`;
+      el.style.transform+=` scale(${lerp(1,1.03,Math.sin(Math.PI*on))})`;
+    } else {
+      el.style.background="rgba(255,255,255,.22)"; el.style.boxShadow="none";
+      b.textContent=i+1; b.style.background="rgba(255,255,255,.25)"; b.style.color="rgba(255,255,255,.85)"; b.style.fontSize="32px"; b.style.transform="none";
+      el.querySelector("h4").style.color="rgba(255,255,255,.75)";
+      el.querySelector("p").style.color="rgba(255,255,255,.6)";
+    }
+  });
+
+  // ---- scene 4 (13.4 - 18.2)
+  sceneVis($("s4"),t,13.4,18.4);
+  const hh=eo(P(t,13.6,.5)); $("h4").style.opacity=hh; $("h4").style.transform=`translateY(${(1-hh)*-20}px)`;
+  prods.forEach((p,i)=>{
+    const el=$("pc"+i), s=spr(P(t,13.8+i*.18,.9));
+    el.style.opacity=clamp(P(t,13.8+i*.18,.2));
+    el.style.transform=`translateY(${(1-s)*160}px)`;
+    const lb=el.querySelector(".lb"), st=P(t,15.0+i*.22,.3), sp=spr(P(t,15.0+i*.22,.5));
+    lb.style.opacity=st; lb.style.transform=`translateX(-50%) scale(${lerp(1.8,1,sp)}) rotate(${lerp(-8,0,sp)}deg)`;
+  });
+  pillWipe($("p4"),t,16.0);
+  const lt=spr(P(t,16.8,.7)); $("lit").style.opacity=clamp(P(t,16.8,.25));
+  $("lit").style.transform=`translateY(${(1-lt)*50}px) scale(${lerp(.9,1,lt)})`;
+};
+window.render(0);
+</script>
+</body></html>

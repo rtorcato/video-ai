@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script src="beats.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font-family:"Inter Display","Inter",sans-serif;-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+#bg{position:absolute;inset:0}
+.bg-navy{background:radial-gradient(ellipse at 50% 40%,rgba(16,185,129,.22),transparent 55%),linear-gradient(165deg,#0a1422 0%,#0f2236 60%,#123a3a 100%)}
+.bg-blue{background:radial-gradient(ellipse at 45% 35%,rgba(255,255,255,.30),transparent 55%),linear-gradient(160deg,#1f6fd6 0%,#2b8ad9 50%,#22b5a5 100%)}
+.bg-green{background:radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.32),transparent 55%),linear-gradient(160deg,#0ea472 0%,#10b981 45%,#5fd3b0 100%)}
+#ring{position:absolute;border:4px solid rgba(255,255,255,.6);border-radius:34px;box-shadow:0 30px 70px rgba(0,10,20,.45);display:none}
+.scene{position:absolute;inset:0;display:none}
+.card{position:absolute;background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(5,30,40,.30),0 4px 12px rgba(5,30,40,.12)}
+.dots{display:flex;gap:8px}.dots i{width:13px;height:13px;border-radius:50%;display:block}
+.pill{position:absolute;background:#ffd43b;color:#16161d;font-weight:850;font-size:58px;letter-spacing:-.035em;padding:6px 26px 10px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.22);white-space:nowrap}
+.pill.r{background:#ff6b6b;color:#fff}
+.step .tag{display:inline-block;font:900 26px "Inter Display";letter-spacing:.14em;color:#fff;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.5);border-radius:999px;padding:6px 22px}
+.step h2{font-size:80px;font-weight:900;letter-spacing:-.05em;color:#fff;margin-top:14px;text-shadow:0 8px 30px rgba(5,30,40,.3)}
+.term{position:absolute;background:#0a1422;border-radius:24px;box-shadow:0 30px 70px rgba(0,10,20,.5);border:2px solid rgba(255,255,255,.14);padding:24px 34px;font-family:"DejaVu Sans Mono",monospace;color:#e6e7ef}
+.term .ttl{position:absolute;top:20px;left:0;width:100%;text-align:center;font:600 18px "Inter Display";color:#8a97a8}
+.term .ln{white-space:pre;height:1.6em}
+.g{color:#34d399}.m{color:#7f8ea3}.y{color:#ffd43b}.b2{color:#7cc4ff}.h{color:#9fb0c4;font-weight:bold}
+.chk{position:absolute;width:820px;height:112px;border-radius:24px;display:flex;align-items:center;gap:26px;padding:0 30px}
+.chk .b{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 32px "Inter Display";flex:none}
+.chk h4{font-size:36px;font-weight:850;letter-spacing:-.03em}.chk p{font-size:20px;font-weight:600;margin-top:2px}
+.chore{position:absolute;height:90px;width:680px;padding:0 30px;border-radius:20px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.22);color:#e8eef5;font:700 32px "DejaVu Sans Mono";display:flex;align-items:center;white-space:nowrap}
+.host{position:absolute;width:400px;height:170px;padding:22px 26px}
+.host .row{display:flex;align-items:center;gap:16px}
+.host .ic{width:66px;height:66px;border-radius:18px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font:38px "Noto Color Emoji"}
+.host h3{font-size:34px;font-weight:850;letter-spacing:-.02em;color:#101820}
+.host p{font:500 19px "DejaVu Sans Mono";color:#5b6676;margin-top:2px}
+.st{position:absolute;font-size:20px;font-weight:800;padding:5px 14px;border-radius:999px}
+.host .st{left:26px;bottom:20px}
+.mini{position:absolute;width:196px;height:170px;padding:18px;text-align:center}
+.mini .ic{width:70px;height:70px;margin:0 auto;border-radius:20px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font:40px "Noto Color Emoji"}
+.mini h3{font-size:28px;font-weight:850;color:#101820;margin-top:8px}
+.mini .st{left:50%;transform:translateX(-50%);bottom:12px;font-size:17px;white-space:nowrap}
+/* camera placeholder */
+#cam{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:960px 540px;display:none;overflow:hidden;
+  background:radial-gradient(ellipse at 60% 25%,rgba(16,185,129,.30),transparent 55%),linear-gradient(170deg,#1d2b37,#0c141d)}
+#cam .hd{position:absolute;left:830px;top:250px;width:260px;height:300px;border-radius:50%;background:#34434f}
+#cam .sh{position:absolute;left:640px;top:580px;width:640px;height:560px;border-radius:280px 280px 0 0;background:#34434f}
+#cam .lb{position:absolute;left:520px;top:170px;font:800 26px "Inter Display";color:#fff;background:rgba(0,0,0,.45);padding:10px 18px;border-radius:12px;letter-spacing:.02em}
+#cam .tc{position:absolute;right:520px;top:170px;font:700 26px "DejaVu Sans Mono";color:#9fb0c4;background:rgba(0,0,0,.45);padding:10px 16px;border-radius:12px}
+#cam .vo{position:absolute;left:520px;width:880px;bottom:70px;font:700 34px/1.3 "Inter Display";color:#fff;background:rgba(0,0,0,.6);padding:18px 24px;border-radius:16px;text-align:center}
+#cam .vo small{display:block;font:800 18px "Inter Display";letter-spacing:.14em;color:#34d399;margin-bottom:6px}
+</style></head>
+<body>
+<div id="cam"><div class="hd"></div><div class="sh"></div><div class="lb"><span id="recdot" style="color:#ff4d4f">●</span> A-ROLL PLACEHOLDER</div><div class="tc" id="tc">00:00</div><div class="vo"><small>SAY THIS</small><span id="voline"></span></div></div>
+<div id="bg"></div>
+<div id="ring"></div>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="nut" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#0a1422"/><g transform="translate(4 4)" fill="none" stroke="#10b981" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5v2.5M14 2.5v2.5"/><path d="M12 5c4 0 6.5 3.4 6.5 8S15.7 21.5 12 21.5 5.5 17.6 5.5 13 8 5 12 5z"/><path d="M12 5.5c-1 2.2 1 3.8 0 6s1 3.8 0 6.2"/><path d="M8.6 10.5c.8.6.8 1.6 0 2.3M15.4 12.2c-.8.6-.8 1.6 0 2.3"/></g></symbol>
+</defs></svg>
+
+<!-- b1 hook (camera left) -->
+<div class="scene" id="b1">
+  <div class="card" id="b1clock" style="left:960px;top:170px;width:880px;height:300px;padding:40px 46px">
+    <div style="font:800 24px 'Inter Display';color:#5b6676;letter-spacing:.08em">TUESDAY · YOUR RACK</div>
+    <div style="font-size:150px;font-weight:900;letter-spacing:-.05em;color:#0a1422;line-height:1.05">2:07<span style="font-size:70px;margin-left:12px">AM</span></div>
+    <div id="b1lost" class="abs" style="right:40px;top:44px;font:850 30px 'Inter Display';color:#fff;background:#e03131;padding:10px 22px;border-radius:999px">⚡ Power lost</div>
+  </div>
+  <div id="b1hosts"></div>
+  <div id="b1q" class="abs" style="left:960px;width:880px;top:770px;text-align:center;font-size:56px;font-weight:900;letter-spacing:-.04em;color:#fff;line-height:1.15">Clean shutdown…<br><span style="color:#ff8787">or hard crash?</span></div>
+</div>
+
+<!-- b2 hero -->
+<div class="scene" id="b2">
+  <div class="abs" style="left:1060px;top:80px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.28),transparent 65%)"></div>
+  <img id="masc2" src="mascot-green.png" class="abs" style="left:1130px;top:110px;height:820px;filter:drop-shadow(0 0 28px rgba(16,185,129,.35))">
+  <div id="chip2" class="abs" style="left:820px;top:880px;background:#0f1c2e;border:2px solid rgba(148,163,184,.25);border-radius:18px;padding:18px 24px;font:500 24px 'DejaVu Sans Mono';color:#b4bfcc;box-shadow:0 20px 50px rgba(0,0,0,.4)">
+    <div><span style="background:#10b981;color:#06231a;font-weight:bold;padding:2px 10px;border-radius:6px">OL</span> <b style="color:#e9f5ee">pi</b> · cyberpower</div>
+    <div style="margin-top:8px">battery 100% · load 8% · 2h03m</div></div>
+  <div id="hA" class="abs" style="left:150px;top:250px;font:600 24px 'DejaVu Sans Mono';color:#9aa4b2;background:#0f1c2e;border:2px solid rgba(148,163,184,.22);border-radius:999px;padding:8px 20px"><span style="color:#fb923c">alpha</span> · v0.2</div>
+  <div id="hW" class="abs" style="left:140px;top:320px;font-size:150px;font-weight:900;letter-spacing:-.055em;color:#e9f5ee;line-height:1.05">homelab-<span style="color:#34d399">nut</span></div>
+  <div id="hG" class="abs" style="left:150px;top:500px;width:860px;font-size:46px;font-weight:650;letter-spacing:-.02em;color:#b4bfcc;line-height:1.25">Network UPS Tools,<br>set up from your laptop.</div>
+  <div id="hI" class="abs" style="left:150px;top:680px;background:#0f1c2e;border:2px solid rgba(148,163,184,.22);border-radius:16px;padding:18px 28px;font:600 34px 'DejaVu Sans Mono';color:#e9f5ee"><span style="color:#34d399">$</span> <span id="hIt"></span></div>
+</div>
+
+<!-- b3 old way -->
+<div class="scene" id="b3">
+  <div class="step abs" id="st3" style="left:0;width:1920px;text-align:center;top:40px"><span class="tag" style="background:rgba(255,107,107,.2);border-color:rgba(255,107,107,.6)">THE OLD WAY</span><h2>Graceful shutdown, by hand</h2></div>
+  <div id="chores"></div>
+  <div class="pill r" id="p3" style="left:960px;top:800px">A multi-day project.</div>
+</div>
+
+<!-- b5 step 1 (camera right) -->
+<div class="scene" id="b5">
+  <div class="step abs" id="st5" style="left:60px;top:60px"><span class="tag">STEP 1 OF 2</span><h2 style="font-size:72px">Describe your fleet</h2></div>
+  <div class="term" id="term5" style="left:60px;top:270px;width:900px;height:520px;font-size:24px;padding-top:70px">
+    <div class="dots abs" style="left:28px;top:24px"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+    <div class="ttl">terminal</div><div id="l5"></div>
+  </div>
+  <div class="pill" id="p5" style="left:510px;top:850px;font-size:46px">Guided forms → homelab-nut.yaml</div>
+</div>
+
+<!-- b6 step 2 -->
+<div class="scene" id="b6">
+  <div class="step abs" id="st6" style="left:0;width:1920px;text-align:center;top:40px"><span class="tag">STEP 2 OF 2</span><h2>Plan, then apply</h2></div>
+  <div class="term" id="term6" style="left:130px;top:290px;width:1660px;height:540px;font-size:29px;padding-top:72px">
+    <div class="dots abs" style="left:28px;top:24px"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+    <div class="ttl">terminal</div><div id="l6"></div>
+  </div>
+  <div class="pill" id="p6" style="left:960px;top:880px">Over SSH. From your laptop.</div>
+</div>
+
+<!-- b7 outage -->
+<div class="scene" id="b7">
+  <div class="step abs" id="st7" style="left:0;width:1920px;text-align:center;top:40px"><span class="tag">WHEN THE POWER DROPS</span><h2>Shut down in order</h2></div>
+  <div id="ban7" class="abs" style="left:960px;top:250px;font:850 34px 'Inter Display';color:#fff;background:#e03131;padding:10px 26px;border-radius:999px;white-space:nowrap">⚡ Utility power lost</div>
+  <svg class="abs" width="1920" height="1080" style="left:0;top:0"><g id="lines7" stroke="rgba(255,255,255,.35)" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 12"></g></svg>
+  <div id="ups" class="abs" style="left:800px;top:400px;width:320px;height:320px;border-radius:50%;background:#fff;box-shadow:0 0 0 14px rgba(255,255,255,.18),0 30px 70px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-size:26px;font-weight:800;color:#5b6676;letter-spacing:.06em">UPS · rack-pi</div>
+    <div id="pct" style="font-size:100px;font-weight:900;letter-spacing:-.05em;color:#0a1422;line-height:1.05">100%</div>
+    <div id="ust" style="font:800 26px 'DejaVu Sans Mono';padding:4px 16px;border-radius:999px">OL</div>
+  </div>
+  <div id="hosts7"></div>
+  <img id="masc7" src="mascot-green.png" class="abs" style="left:1560px;top:820px;height:250px;filter:drop-shadow(0 0 18px rgba(16,185,129,.4))">
+  <div id="zz7" class="abs" style="left:1790px;top:790px;font:900 44px Inter Display;color:#34d399">z z z</div>
+  <div class="pill" id="p7" style="left:960px;top:940px">Graceful. In order.</div>
+</div>
+
+<!-- b9 outro (camera left) -->
+<div class="scene" id="b9">
+  <div class="card" id="h9" style="left:960px;top:90px;width:880px;height:240px;padding:36px 42px">
+    <div style="display:flex;align-items:center;gap:24px"><svg width="110" height="110"><use href="#nut"/></svg><div>
+      <div style="font-size:66px;font-weight:900;letter-spacing:-.05em;color:#0a1422;line-height:1">homelab-<span style="color:#10b981">nut</span></div>
+      <div style="font:600 25px 'DejaVu Sans Mono';color:#0e9f6e;margin-top:12px">docs.torcato.dev/homelab-nut</div></div></div>
+  </div>
+  <img id="masc9" src="mascot-navy.png" class="abs" style="left:1630px;top:105px;height:215px;z-index:5">
+  <div id="rows9"></div>
+</div>
+
+<div id="caps"></div>
+
+<script>
+const C=window.CFG, $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), P=(t,s,d)=>clamp((t-s)/d);
+const eo=x=>1-Math.pow(1-x,3), eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const spr=x=>x<=0?0:x>=1?1:1-Math.exp(-6*x)*Math.cos(8.5*x), lerp=(a,b,x)=>a+(b-a)*x;
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+window.LAYER="preview";
+
+// ---------- build ----------
+const B1H=[["🖥️","desktop"],["🗄️","nas"],["🌐","gateway"],["🔋","rack-pi"]];
+B1H.forEach((h,i)=>{const d=document.createElement("div");d.className="card mini";d.id="m1"+i;d.style.left=(960+i*228)+"px";d.style.top="520px";
+  d.innerHTML=`<div class="ic">${h[0]}</div><h3>${h[1]}</h3><div class="st" style="background:#fff3bf;color:#b7791f">? unknown</div>`;$("b1hosts").appendChild(d);});
+const chores=["apt install nut-server","edit /etc/nut/*.conf","nut-client on every box","generate SSH keys","write shutdown.sh","install systemd unit","battery threshold logic","wire up alerts"];
+chores.forEach((c,i)=>{const d=document.createElement("div");d.className="chore";d.id="co"+i;d.style.left=(i%2?990:250)+"px";d.style.top=(290+Math.floor(i/2)*112)+"px";d.textContent=c;$("chores").appendChild(d);});
+const L5=[[0.9,'<span class="m">$</span> homelab-nut init',1],[2.4,'<span class="g">✓</span> Wrote <span class="y">homelab-nut.yaml</span> <span class="m">(5 hosts)</span>'],
+ [3.0,'<span class="m">$</span> homelab-nut inventory list',1],[4.4,'<span class="h">NAME      ROLES</span>'],
+ [4.65,'rack-pi   <span class="g">nut-server</span>,exporter,shutdown-daemon'],[4.9,'nas-host  <span class="g">nut-server</span>,exporter,shutdown-daemon'],
+ [5.15,'desktop   <span class="b2">nut-client</span>'],[5.4,'nas       <span class="y">shutdown-target</span>'],[5.65,'gateway   <span class="y">shutdown-target</span>']];
+const L6=[[0.9,'<span class="m">$</span> homelab-nut plan',1],[2.0,'<span class="g">+</span> rack-pi   nut-server       <span class="m">install nut-server, nut-client (apt)</span>'],
+ [2.3,'<span class="g">+</span> rack-pi   exporter         <span class="m">Prometheus metrics</span>'],[2.6,'<span class="g">+</span> nas-host  shutdown-daemon  <span class="m">poll battery · threshold 50%</span>'],
+ [2.9,'<span class="g">+</span> desktop   nut-client       <span class="m">watch rack-pi over the network</span>'],[3.2,'<span class="g">+</span> gateway   shutdown-target  <span class="m">ssh poweroff · delay 90s</span>'],
+ [3.9,'<span class="m">$</span> homelab-nut apply --auto-approve',1],[5.6,'<span class="g">✓ 5 hosts configured · 0 failed</span>']];
+function mkLines(el,L){L.forEach((x,i)=>{const d=document.createElement("div");d.className="ln";d.id=el+"_"+i;$(el).appendChild(d);});}
+mkLines("l5",L5);mkLines("l6",L6);
+const H7=[{n:"desktop",r:"nut-client",e:"🖥️",x:150,y:330,off:6.6},{n:"nas",r:"shutdown-target",e:"🗄️",x:150,y:620,off:7.6},
+          {n:"gateway",r:"delay 90s",e:"🌐",x:1370,y:620,off:9.0},{n:"nas-host",r:"own UPS · fine",e:"🔋",x:1370,y:330,off:99}];
+H7.forEach((h,i)=>{const d=document.createElement("div");d.className="card host";d.id="ho"+i;d.style.left=h.x+"px";d.style.top=h.y+"px";
+  d.innerHTML=`<div class="row"><div class="ic">${h.e}</div><div><h3>${h.n}</h3><p>${h.r}</p></div></div><div class="st"></div>`;$("hosts7").appendChild(d);
+  const l=document.createElementNS("http://www.w3.org/2000/svg","line");l.setAttribute("x1",960);l.setAttribute("y1",560);l.setAttribute("x2",h.x+200);l.setAttribute("y2",h.y+85);$("lines7").appendChild(l);});
+[["Install the binary","Linux + macOS · x86_64 + arm64"],["homelab-nut init","Describe your fleet"],["homelab-nut plan","See every change first"],["homelab-nut apply","Configure it all over SSH"]].forEach((r,i)=>{
+  const d=document.createElement("div");d.className="chk";d.id="z"+i;d.style.left="980px";d.style.top=(370+i*128)+"px";
+  d.innerHTML=`<div class="b">${i+1}</div><div><h4>${r[0]}</h4><p>${r[1]}</p></div>`;$("rows9").appendChild(d);});
+C.captions.forEach(c=>{const d=document.createElement("div");d.className="pill";d.id=c.id;d.style.left=c.x+"px";d.style.top=c.y+"px";d.textContent=c.text;$("caps").appendChild(d);});
+
+// ---------- helpers ----------
+function pillAnim(el,u,s,out){const x=eo(P(u,s,.4)),sc=spr(P(u,s,.6));let o=x>0?1:0;if(out!==undefined)o*=1-eo(P(u,out,.25));
+  el.style.clipPath=`inset(0 ${(1-x)*100}% 0 0 round 14px)`;el.style.transform=`translateX(-50%) rotate(-1.5deg) scale(${lerp(.9,1,sc)})`;el.style.opacity=o;}
+function popIn(el,u,s,dy=80){const a=spr(P(u,s,.8));el.style.opacity=clamp(P(u,s,.2));el.style.transform=`translateY(${(1-a)*dy}px) scale(${lerp(.94,1,a)})`;}
+function slideX(el,u,s,dx){const a=spr(P(u,s,.8));el.style.opacity=clamp(P(u,s,.2));el.style.transform=`translateX(${(1-a)*dx}px)`;}
+function strip(h){const d=document.createElement("div");d.innerHTML=h;return d.textContent;}
+function termAnim(el,L,u){L.forEach((x,i)=>{const e=$(el+"_"+i),[s,h,typed]=x;
+  if(u<s){e.innerHTML="";return;}
+  if(typed){const cmd=strip(h).replace(/^\$ /,""),n=Math.floor(clamp((u-s)*24,0,cmd.length)),next=L[i+1]?L[i+1][0]:1e9;
+    const cur=(u<next&&(n<cmd.length||Math.floor(u*2.5)%2===0))?'<span style="background:#e6e7ef;color:#0a1422">&nbsp;</span>':'';
+    e.innerHTML=n>=cmd.length?h+cur:'<span class="m">$</span> '+esc(cmd.slice(0,n))+cur;}
+  else{const a=eo(P(u,s,.3));e.innerHTML=h;e.style.opacity=a;e.style.transform=`translateX(${(1-a)*20}px)`;}});}
+function rowsAnim(prefix,n,u,inAt,tickAt,gap){for(let i=0;i<n;i++){const el=$(prefix+i),a=spr(P(u,inAt+i*.15,.8));el.style.opacity=clamp(P(u,inAt+i*.15,.25));
+  let tf=`translateX(${(1-a)*80}px)`;const on=P(u,tickAt+i*gap,.35),onS=spr(P(u,tickAt+i*gap,.6)),b=el.querySelector(".b");
+  if(on>0){el.style.background=`rgba(255,255,255,${lerp(.22,1,on)})`;el.style.boxShadow=`0 ${20*on}px ${50*on}px rgba(5,30,40,${.25*on})`;b.textContent="✓";b.style.background="#10b981";b.style.color="#fff";b.style.fontSize="36px";b.style.transform=`scale(${lerp(.3,1,onS)})`;
+    el.querySelector("h4").style.color=`rgb(${lerp(255,10,on)},${lerp(255,20,on)},${lerp(255,34,on)})`;el.querySelector("p").style.color=`rgba(70,80,95,${on})`;tf+=` scale(${lerp(1,1.03,Math.sin(Math.PI*on))})`;}
+  else{el.style.background="rgba(255,255,255,.22)";el.style.boxShadow="none";b.textContent=i+1;b.style.background="rgba(255,255,255,.25)";b.style.color="rgba(255,255,255,.9)";b.style.fontSize="32px";b.style.transform="none";
+    el.querySelector("h4").style.color="rgba(255,255,255,.95)";el.querySelector("p").style.color="rgba(255,255,255,.8)";}
+  el.style.transform=tf;}}
+function holePath(w){const {x,y,w:W,h:H,r}=w;return `path(evenodd,"M0 0H1920V1080H0Z M${x+r} ${y}H${x+W-r}A${r} ${r} 0 0 1 ${x+W} ${y+r}V${y+H-r}A${r} ${r} 0 0 1 ${x+W-r} ${y+H}H${x+r}A${r} ${r} 0 0 1 ${x} ${y+H-r}V${y+r}A${r} ${r} 0 0 1 ${x+r} ${y}Z")`;}
+
+// ---------- per-beat animation (u = seconds into the beat) ----------
+const anim={
+ b1(u){$("b1clock").style.opacity=clamp(P(u,.2,.2));popIn($("b1clock"),u,.2,-40);
+   const l=spr(P(u,1.1,.6));$("b1lost").style.opacity=clamp(P(u,1.1,.15));$("b1lost").style.transform=`scale(${lerp(.5,1,l)*(1+.04*Math.sin(u*8)*(u>1.7?1:0))})`;
+   B1H.forEach((h,i)=>popIn($("m1"+i),u,1.6+i*.15,60));
+   const q=spr(P(u,3.0,.7));$("b1q").style.opacity=clamp(P(u,3.0,.2));$("b1q").style.transform=`translateY(${(1-q)*40}px)`;},
+ b2(u){const m=spr(P(u,.2,1.1));$("masc2").style.opacity=clamp(P(u,.2,.25));$("masc2").style.transform=`translateY(${(1-m)*260+Math.sin(u*2.2)*10}px) scale(${lerp(.8,1,m)}) rotate(${Math.sin(u*1.6)*1.5}deg)`;
+   popIn($("chip2"),u,1.4,40);[["hA",.5],["hW",.7],["hG",1.0],["hI",1.4]].forEach(([id,s])=>slideX($(id),u,s,-80));
+   const cmd="homelab-nut init",n=Math.floor(clamp((u-2)*16,0,cmd.length));$("hIt").innerHTML=esc(cmd.slice(0,n))+(Math.floor(u*2.5)%2===0||n<cmd.length?'<span style="background:#e9f5ee;color:#0a1422">&nbsp;</span>':'&nbsp;');},
+ b3(u){popIn($("st3"),u,.2,-50);chores.forEach((c,i)=>{const el=$("co"+i),s=.7+i*.18,a=spr(P(u,s,.7));el.style.opacity=clamp(P(u,s,.2));
+     el.style.transform=`translateY(${(1-a)*50}px) scale(${lerp(.85,1,a)}) rotate(${(i%2?1:-1)*(1-a)*4}deg)`;const k=eo(P(u,3.4+i*.12,.3));
+     el.style.textDecoration=k>.5?"line-through":"none";el.style.color=`rgba(232,238,245,${lerp(1,.55,k)})`;});pillAnim($("p3"),u,4.6);},
+ b5(u){popIn($("st5"),u,.15,-40);popIn($("term5"),u,.4,60);termAnim("l5",L5,u);pillAnim($("p5"),u,6.4);},
+ b6(u){popIn($("st6"),u,.15,-50);popIn($("term6"),u,.4,80);termAnim("l6",L6,u);pillAnim($("p6"),u,6.6);},
+ b7(u){popIn($("st7"),u,.15,-50);const bn=spr(P(u,.7,.6));$("ban7").style.opacity=clamp(P(u,.7,.2));$("ban7").style.transform=`translateX(-50%) scale(${lerp(.6,1,bn)})`;
+   $("ups").style.transform=`scale(${spr(P(u,.4,.8))})`;const pct=Math.round(lerp(100,44,eio(P(u,1.0,4.0))));$("pct").textContent=pct+"%";
+   let s,b,f;if(u<1.0){s="OL";b="#d3f9d8";f="#2b8a3e";}else if(pct>50){s="OB DISCHRG";b="#fff3bf";f="#b7791f";}else{s="OB LB";b="#ffe3e3";f="#c92a2a";}
+   const us=$("ust");us.textContent=s;us.style.background=b;us.style.color=f;
+   $("lines7").querySelectorAll("line").forEach((l,i)=>{l.setAttribute("stroke-dashoffset",-u*40);l.style.opacity=H7[i].off<u?.15:1;});
+   H7.forEach((h,i)=>{const el=$("ho"+i);slideX(el,u,.6+i*.12,h.x<960?-100:100);const st=el.querySelector(".st");
+     if(u<h.off-.9){st.textContent="● Running";st.style.background="#d3f9d8";st.style.color="#2b8a3e";el.style.filter="none";}
+     else if(u<h.off){st.textContent="◐ Shutting down";st.style.background="#fff3bf";st.style.color="#b7791f";el.style.filter="none";}
+     else{const k=eo(P(u,h.off,.4));st.textContent="○ Off";st.style.background="#e9ecef";st.style.color="#495057";el.style.filter=`grayscale(${k}) brightness(${lerp(1,.75,k)})`;}});
+   const m=spr(P(u,9.4,.9));$("masc7").style.opacity=clamp(P(u,9.4,.2));$("masc7").style.transform=`translateY(${(1-m)*200}px) rotate(${Math.sin(u*1.5)*3}deg)`;
+   $("zz7").style.opacity=u>10?(.5+.5*Math.sin(u*4)):0;$("zz7").style.transform=`translateY(${-((u*30)%40)}px)`;pillAnim($("p7"),u,9.8);},
+ b9(u){popIn($("h9"),u,.2,-50);const m=spr(P(u,.6,.9));$("masc9").style.opacity=clamp(P(u,.6,.2));$("masc9").style.transform=`translateY(${(1-m)*60}px) rotate(${Math.sin(u*3)*3}deg)`;
+   rowsAnim("z",4,u,.6,1.5,.45);}
+};
+
+// ---------- render ----------
+window.render=function(t){
+  const L=window.LAYER, beat=C.beats.find(b=>t>=b.start&&t<b.end)||C.beats[C.beats.length-1], u=t-beat.start;
+  const showCam=L==="cam"||L==="preview", showGfx=L==="gfx"||L==="preview", showCap=L==="cap"||L==="preview";
+  // camera placeholder (A-roll stand-in)
+  const cam=$("cam");cam.style.display=showCam?"block":"none";
+  $("voline").textContent=beat.vo;$("recdot").style.opacity=(Math.floor(t*2)%2)?1:.25;
+  const mm=Math.floor(t/60),ss=Math.floor(t%60);$("tc").textContent=`${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  const win=beat.mode==="pipL"?C.window.left:beat.mode==="pipR"?C.window.right:null;
+  if(L==="preview"&&win){const k=C.window.cameraScale,dx=(win.x+win.w/2)-960,dy=(win.y+win.h/2)-540;cam.style.transform=`translate(${dx}px,${dy}px) scale(${k})`;}
+  else cam.style.transform="none";
+  // background + window
+  const bg=$("bg"),ring=$("ring");
+  if(showGfx&&beat.mode!=="cam"){bg.style.display="block";bg.className="bg-"+beat.bg;bg.style.clipPath=win?holePath(win):"none";
+    if(win){ring.style.display="block";Object.assign(ring.style,{left:(win.x-4)+"px",top:(win.y-4)+"px",width:(win.w+8)+"px",height:(win.h+8)+"px"});}else ring.style.display="none";}
+  else{bg.style.display="none";ring.style.display="none";}
+  // scenes
+  document.querySelectorAll(".scene").forEach(s=>s.style.display="none");
+  if(showGfx&&beat.mode!=="cam"&&$(beat.id)){$(beat.id).style.display="block";anim[beat.id](u);}
+  // captions
+  C.captions.forEach(c=>{const el=$(c.id);if(showCap&&t>=c.start&&t<c.end){el.style.display="block";pillAnim(el,t,c.start,c.end-.25);}else el.style.display="none";});
+};
+window.render(0);
+</script>
+</body></html>

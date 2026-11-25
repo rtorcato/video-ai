@@ -1,0 +1,33 @@
+{
+  "project": "homelab-nut",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "window": { "left": { "x": 60, "y": 60, "w": 840, "h": 960, "r": 34 }, "right": { "x": 1020, "y": 60, "w": 840, "h": 960, "r": 34 }, "cameraScale": 0.9 },
+  "beats": [
+    { "id": "b1", "name": "Hook", "mode": "pipL", "bg": "navy", "start": 0, "end": 6,
+      "vo": "Power goes out at 2 a.m. Does your homelab shut down cleanly, or does it just crash?" },
+    { "id": "b2", "name": "Hero", "mode": "gfx", "bg": "navy", "start": 6, "end": 12,
+      "vo": "This is homelab-nut: Network UPS Tools, set up from your laptop." },
+    { "id": "b3", "name": "The old way", "mode": "gfx", "bg": "navy", "start": 12, "end": 20,
+      "vo": "Normally, a graceful shutdown across machines means configs, SSH keys, scripts, systemd units and alerts. It's a multi-day project." },
+    { "id": "b4", "name": "Two commands", "mode": "cam", "start": 20, "end": 24,
+      "vo": "homelab-nut turns all of that into two commands." },
+    { "id": "b5", "name": "Step 1: init", "mode": "pipR", "bg": "blue", "start": 24, "end": 33,
+      "vo": "Step one: init. Guided forms describe your fleet: which box has the UPS, which are clients, and what needs a clean power-off." },
+    { "id": "b6", "name": "Step 2: plan + apply", "mode": "gfx", "bg": "green", "start": 33, "end": 42,
+      "vo": "Step two: plan shows every change before it happens. Then apply configures every host over SSH." },
+    { "id": "b7", "name": "The outage", "mode": "gfx", "bg": "navy", "start": 42, "end": 54,
+      "vo": "Now when the power drops, a battery-watch daemon counts down and shuts everything off in order: desktop, NAS, and the gateway last." },
+    { "id": "b8", "name": "Sleep through it", "mode": "cam", "start": 54, "end": 58,
+      "vo": "And you sleep right through it." },
+    { "id": "b9", "name": "Outro", "mode": "pipL", "bg": "green", "start": 58, "end": 66,
+      "vo": "It's open source. The docs are at docs.torcato.dev/homelab-nut, and if it saves your rack, give it a star on GitHub." }
+  ],
+  "captions": [
+    { "id": "c1", "text": "Power out at 2 a.m.?", "start": 0.5, "end": 5.8, "x": 1410, "y": 50, "style": "yellow" },
+    { "id": "c2", "text": "Two commands.", "start": 20.3, "end": 23.9, "x": 960, "y": 60, "style": "yellow" },
+    { "id": "c3", "text": "Sleep through it.", "start": 54.3, "end": 57.9, "x": 960, "y": 60, "style": "yellow" },
+    { "id": "c4", "text": "Star it on GitHub.", "start": 61.5, "end": 65.9, "x": 1410, "y": 950, "style": "yellow" }
+  ]
+}

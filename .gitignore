@@ -1,0 +1,10 @@
+# rendered output: videos are built, not committed
+media/
+stills/
+*.mp4
+*.mov
+*.part.*
+*.fcpxml
+beats.js
+__pycache__/
+.DS_Store
