@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script src="beats.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font-family:"Inter Display","Inter",sans-serif;-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+#bg{position:absolute;inset:0}
+.bg-dark{background:radial-gradient(ellipse at 25% 20%,rgba(99,102,241,.28),transparent 50%),radial-gradient(ellipse at 80% 85%,rgba(16,185,129,.18),transparent 50%),linear-gradient(160deg,#0a0e16 0%,#0f1626 60%,#121a30 100%)}
+.bg-blue{background:radial-gradient(ellipse at 45% 35%,rgba(255,255,255,.30),transparent 55%),linear-gradient(160deg,#3b5bdb 0%,#4f7cf7 50%,#6f78f6 100%)}
+.bg-violet{background:radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.28),transparent 55%),linear-gradient(140deg,#5b5cf0 0%,#7c5cf5 45%,#c26bd6 100%)}
+.bg-green{background:radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.32),transparent 55%),linear-gradient(160deg,#0ea472 0%,#10b981 45%,#5fd3b0 100%)}
+#ring{position:absolute;border:4px solid rgba(255,255,255,.6);border-radius:34px;box-shadow:0 30px 70px rgba(0,0,0,.4);display:none}
+.scene{position:absolute;inset:0;display:none}
+.card{position:absolute;background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(10,14,40,.30),0 4px 12px rgba(10,14,40,.12)}
+.dark-card{position:absolute;background:#111827;border:2px solid rgba(148,163,184,.18);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.dots{display:flex;gap:8px}.dots i{width:13px;height:13px;border-radius:50%;display:block}
+.pill{position:absolute;background:#ffd43b;color:#16161d;font-weight:850;font-size:58px;letter-spacing:-.035em;padding:6px 26px 10px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.22);white-space:nowrap}
+.tag{display:inline-block;font:900 24px "Inter Display";letter-spacing:.14em;color:#fff;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);border-radius:999px;padding:6px 20px}
+.h2{font-size:84px;font-weight:900;letter-spacing:-.05em;color:#fff;margin-top:12px;text-shadow:0 8px 30px rgba(10,14,40,.3);font-family:"DejaVu Sans Mono";letter-spacing:-.06em}
+.term{position:absolute;background:#0a0e16;border-radius:24px;box-shadow:0 30px 70px rgba(0,0,0,.5);border:2px solid rgba(255,255,255,.14);padding:24px 34px;font-family:"DejaVu Sans Mono",monospace;color:#e6e7ef}
+.term .ttl{position:absolute;top:20px;left:0;width:100%;text-align:center;font:600 18px "Inter Display";color:#8a97a8}
+.term .ln{white-space:pre;height:1.6em}
+.g{color:#34d399}.m{color:#7f8ea3}.y{color:#ffd43b}.b2{color:#7cc4ff}.v{color:#b197fc}
+.chip{display:inline-block;font:700 18px "DejaVu Sans Mono";padding:4px 12px;border-radius:999px}
+.lib{position:absolute;width:390px;height:210px;padding:24px 26px}
+.lib h3{font:800 30px "DejaVu Sans Mono";letter-spacing:-.04em;color:#0a0e16}
+.lib p{font-size:21px;font-weight:600;color:#4b5563;margin-top:8px;line-height:1.3}
+.lib .row{position:absolute;left:26px;bottom:20px;display:flex;gap:8px}
+.prod{position:absolute;width:860px;height:200px;display:flex;align-items:center;gap:30px;padding:0 34px}
+.prod .ic{width:130px;height:130px;border-radius:30px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font:76px "Noto Color Emoji";flex:none;overflow:hidden}
+.prod h3{font:800 42px "DejaVu Sans Mono";letter-spacing:-.05em;color:#0a0e16}
+.prod p{font-size:25px;font-weight:600;color:#4b5563;margin-top:6px}
+.flow{position:absolute;width:480px;height:300px;padding:30px;text-align:center}
+.flow .ic{width:110px;height:110px;margin:0 auto;border-radius:28px;display:flex;align-items:center;justify-content:center;font:62px "Noto Color Emoji"}
+.flow h3{font-size:40px;font-weight:900;letter-spacing:-.04em;color:#0a0e16;margin-top:18px}
+.flow p{font-size:22px;font-weight:600;color:#4b5563;margin-top:6px}
+.node{position:absolute;width:800px;height:118px;display:flex;align-items:center;gap:22px;padding:0 28px}
+.node .ic{width:70px;height:70px;border-radius:20px;display:flex;align-items:center;justify-content:center;font:40px "Noto Color Emoji";flex:none}
+.node h4{font-size:32px;font-weight:850;letter-spacing:-.03em;color:#0a0e16}
+.node p{font:600 20px "DejaVu Sans Mono";color:#5b6676;margin-top:2px}
+.stat{position:absolute;width:360px;height:190px;padding:26px 30px}
+.stat b{display:block;font-size:84px;font-weight:900;letter-spacing:-.05em;color:#fff;line-height:1}
+.stat span{display:block;font-size:24px;font-weight:700;color:#9aa4b2;margin-top:10px}
+/* camera placeholder */
+#cam{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:960px 540px;display:none;overflow:hidden;
+  background:radial-gradient(ellipse at 60% 25%,rgba(99,102,241,.32),transparent 55%),linear-gradient(170deg,#1b2232,#0b0f18)}
+#cam .hd{position:absolute;left:830px;top:250px;width:260px;height:300px;border-radius:50%;background:#353e52}
+#cam .sh{position:absolute;left:640px;top:580px;width:640px;height:560px;border-radius:280px 280px 0 0;background:#353e52}
+#cam .lb{position:absolute;left:520px;top:170px;font:800 26px "Inter Display";color:#fff;background:rgba(0,0,0,.45);padding:10px 18px;border-radius:12px}
+#cam .tc{position:absolute;right:520px;top:170px;font:700 26px "DejaVu Sans Mono";color:#9fb0c4;background:rgba(0,0,0,.45);padding:10px 16px;border-radius:12px}
+#cam .vo{position:absolute;left:520px;width:880px;bottom:70px;font:700 34px/1.3 "Inter Display";color:#fff;background:rgba(0,0,0,.6);padding:18px 24px;border-radius:16px;text-align:center}
+#cam .vo small{display:block;font:800 18px "Inter Display";letter-spacing:.14em;color:#a5b4fc;margin-bottom:6px}
+</style></head>
+<body>
+<div id="cam"><div class="hd"></div><div class="sh"></div><div class="lb"><span id="recdot" style="color:#ff4d4f">●</span> A-ROLL PLACEHOLDER</div><div class="tc" id="tc">00:00</div><div class="vo"><small>SAY THIS</small><span id="voline"></span></div></div>
+<div id="bg"></div>
+<div id="ring"></div>
+
+<!-- b1 intro (camera left) -->
+<div class="scene" id="b1">
+  <div class="card" id="pf" style="left:960px;top:150px;width:880px;height:330px;padding:40px 44px">
+    <div style="display:flex;align-items:center;gap:30px">
+      <div style="width:150px;height:150px;border-radius:50%;background:linear-gradient(140deg,#6366f1,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font:900 62px 'Inter Display';letter-spacing:-.04em;flex:none">RT</div>
+      <div><div style="font-size:66px;font-weight:900;letter-spacing:-.05em;color:#0a0e16;line-height:1">Richard Torcato</div>
+        <div style="font-size:26px;font-weight:650;color:#4b5563;margin-top:12px;line-height:1.3">Full-stack developer &amp;<br>open-source tooling builder</div></div>
+    </div>
+    <div class="abs" style="left:44px;bottom:34px;font:700 24px 'DejaVu Sans Mono';color:#4f46e5;background:#eef2ff;padding:8px 18px;border-radius:999px">torcato.dev</div>
+    <div class="abs" style="right:44px;bottom:34px;font:800 22px 'Inter Display';color:#047857;background:#d1fae5;padding:8px 18px;border-radius:999px">● Independent · shipping daily</div>
+  </div>
+  <div id="b1stats"></div>
+</div>
+
+<!-- b2 the loop -->
+<div class="scene" id="b2">
+  <div id="loopw" class="abs" style="left:0;width:1920px;top:250px;text-align:center;white-space:nowrap"></div>
+  <div id="loopline" class="abs" style="left:260px;top:470px;height:6px;width:1400px;border-radius:3px;background:linear-gradient(90deg,#4f7cf7,#7c5cf5,#f59f00,#fff);transform-origin:left"></div>
+  <div id="b2stats"></div>
+</div>
+
+<!-- b3 scaffold -->
+<div class="scene" id="b3">
+  <div id="st3" class="abs" style="left:0;width:1920px;text-align:center;top:40px"><span class="tag">STEP 1 · SCAFFOLD</span><div class="h2">repo-tooling</div></div>
+  <div class="term" id="term3" style="left:260px;top:300px;width:1400px;height:500px;font-size:32px;padding-top:72px">
+    <div class="dots abs" style="left:28px;top:24px"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+    <div class="ttl">terminal</div><div id="l3"></div>
+  </div>
+  <div class="pill" id="p3" style="left:960px;top:860px">Any JS project.</div>
+</div>
+
+<!-- b4 build (camera right) -->
+<div class="scene" id="b4">
+  <div id="st4" class="abs" style="left:70px;top:60px"><span class="tag">STEP 2 · BUILD</span><div class="h2" style="font-size:76px">repo-ai</div></div>
+  <div id="cmd4" class="abs" style="left:700px;top:96px;font:700 28px 'DejaVu Sans Mono';color:#fff;background:#0a0e16;padding:12px 20px;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.3)">/ai-loop</div>
+  <svg class="abs" width="1920" height="1080" style="left:0;top:0"><g id="flow4" stroke="rgba(255,255,255,.85)" stroke-width="5" fill="none" stroke-linecap="round"></g></svg>
+  <div id="nodes4"></div>
+</div>
+
+<!-- b5 brand -->
+<div class="scene" id="b5">
+  <div id="st5" class="abs" style="left:0;width:1920px;text-align:center;top:40px"><span class="tag">STEP 3 · BRAND</span><div class="h2">brand-kit</div></div>
+  <div id="cmd5" class="abs" style="left:960px;top:240px;font:700 30px 'DejaVu Sans Mono';color:#e6e7ef;background:#111827;border:2px solid rgba(148,163,184,.25);padding:14px 26px;border-radius:16px"><span class="g">$</span> <span id="cmd5t"></span></div>
+  <div class="dark-card" id="o1" style="left:130px;top:360px;width:960px;height:300px;padding:20px;overflow:hidden"><img src="banner.png" style="width:920px;height:230px;border-radius:12px;display:block"><div style="font:700 20px 'DejaVu Sans Mono';color:#9aa4b2;margin-top:10px">banner.png</div></div>
+  <div class="dark-card" id="o2" style="left:1130px;top:360px;width:660px;height:390px;padding:20px;overflow:hidden"><img src="social-card.png" style="width:620px;height:310px;border-radius:12px;display:block"><div style="font:700 20px 'DejaVu Sans Mono';color:#9aa4b2;margin-top:10px">social-card.png</div></div>
+  <div class="dark-card" id="o3" style="left:130px;top:690px;width:300px;height:300px;padding:20px;text-align:center"><img src="favicon-512.png" style="width:200px;height:200px;border-radius:40px"><div style="font:700 20px 'DejaVu Sans Mono';color:#9aa4b2;margin-top:12px">favicon</div></div>
+  <div id="o4" class="abs" style="left:470px;top:760px;width:620px;font-size:40px;font-weight:850;letter-spacing:-.03em;color:#e9f5ee;line-height:1.25">Real output, from my<br><span style="color:#34d399">homelab-nut</span> repo.</div>
+</div>
+
+<!-- b7 libraries -->
+<div class="scene" id="b7">
+  <div id="st7" class="abs" style="left:0;width:1920px;text-align:center;top:46px"><div style="font-size:96px;font-weight:900;letter-spacing:-.05em;color:#fff;text-shadow:0 8px 30px rgba(10,14,40,.3)"><span style="color:#ffd43b">8</span> libraries</div><div style="font-size:30px;font-weight:700;color:rgba(255,255,255,.85);margin-top:4px">small · tree-shakeable · free</div></div>
+  <div id="libs"></div>
+  <div class="pill" id="p7" style="left:960px;top:880px">One import at a time.</div>
+</div>
+
+<!-- b8 products (camera left) -->
+<div class="scene" id="b8">
+  <div id="st8" class="abs" style="left:960px;top:70px"><span class="tag">PRODUCTS</span><div style="font-size:72px;font-weight:900;letter-spacing:-.05em;color:#fff;margin-top:10px">Things I run</div></div>
+  <div id="prods"></div>
+</div>
+
+<!-- b9 how I build -->
+<div class="scene" id="b9">
+  <div id="st9" class="abs" style="left:0;width:1920px;text-align:center;top:60px"><span class="tag">HOW I BUILD</span><div style="font-size:88px;font-weight:900;letter-spacing:-.05em;color:#fff;margin-top:12px;text-shadow:0 8px 30px rgba(10,14,40,.3)">Agents help. I decide.</div></div>
+  <svg class="abs" width="1920" height="1080" style="left:0;top:0"><g id="flow9" stroke="rgba(255,255,255,.9)" stroke-width="6" fill="none" stroke-linecap="round"></g></svg>
+  <div id="flows"></div>
+</div>
+
+<!-- b10 outro (camera left) -->
+<div class="scene" id="b10">
+  <div class="card" id="h10" style="left:960px;top:90px;width:880px;height:230px;padding:36px 44px">
+    <div style="font:800 22px 'Inter Display';letter-spacing:.12em;color:#6366f1">EVERYTHING · FREE · OPEN SOURCE</div>
+    <div style="font:900 96px 'DejaVu Sans Mono';letter-spacing:-.07em;color:#0a0e16;line-height:1.15;margin-top:6px">torcato<span style="color:#6366f1">.dev</span></div>
+  </div>
+  <div id="links10"></div>
+  <div id="inst10" class="abs" style="left:960px;top:780px;width:880px;font:700 30px 'DejaVu Sans Mono';color:#e6e7ef;background:#111827;border:2px solid rgba(148,163,184,.25);padding:20px 28px;border-radius:18px"><span class="g">$</span> <span id="inst10t"></span></div>
+</div>
+
+<div id="caps"></div>
+
+<script>
+const C=window.CFG, $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), P=(t,s,d)=>clamp((t-s)/d);
+const eo=x=>1-Math.pow(1-x,3), eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const spr=x=>x<=0?0:x>=1?1:1-Math.exp(-6*x)*Math.cos(8.5*x), lerp=(a,b,x)=>a+(b-a)*x;
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const el=(cls,html,style)=>{const d=document.createElement("div");d.className=cls;d.innerHTML=html;Object.assign(d.style,style||{});return d;};
+window.LAYER="preview";
+
+// ---- build ----
+[["1997","building since"],["Ontario","Canada"],["14","public projects"]].forEach((s,i)=>{
+  const d=el("card",`<div style="font-size:50px;font-weight:900;letter-spacing:-.04em;color:#0a0e16;line-height:1.1">${s[0]}</div><div style="font-size:22px;font-weight:700;color:#6b7280;margin-top:8px">${s[1]}</div>`,
+    {left:(960+i*300)+"px",top:"530px",width:"280px",height:"170px",padding:"28px 26px"});d.id="s1"+i;$("b1stats").appendChild(d);});
+const LOOP=[["Scaffold.","#7cc4ff"],["Build.","#b197fc"],["Brand.","#fcc419"],["Repeat.","#ffffff"]];
+LOOP.forEach((w,i)=>{const s=document.createElement("span");s.id="lw"+i;s.textContent=w[0];Object.assign(s.style,{display:"inline-block",fontSize:"118px",fontWeight:"900",letterSpacing:"-.055em",color:w[1],margin:"0 16px"});$("loopw").appendChild(s);});
+[["14","public projects"],["8","libraries"],["3","pipeline steps"],["1997","shipping since"]].forEach((s,i)=>{
+  const d=el("dark-card stat",`<b id="sv${i}">0</b><span>${s[1]}</span>`,{left:(180+i*400)+"px",top:"620px"});d.id="st2"+i;d.dataset.v=s[0];$("b2stats").appendChild(d);});
+const L3=[[0.8,'<span class="m">$</span> npx @rtorcato/repo-tooling',1],[2.4,'<span class="v">◆</span> Project name <span class="m">›</span> my-lib'],
+ [3.0,'<span class="g">✓</span> TypeScript   <span class="m">strict config</span>'],[3.4,'<span class="g">✓</span> Linting      <span class="m">lint + format on commit</span>'],
+ [3.8,'<span class="g">✓</span> Testing      <span class="m">test runner + coverage</span>'],[4.2,'<span class="g">✓</span> Releases     <span class="m">versioning + publish</span>'],
+ [5.0,'<span class="y">Ready.</span> Start a repo the way mine start.']];
+L3.forEach((x,i)=>{const d=el("ln","");d.id="l3_"+i;$("l3").appendChild(d);});
+const N4=[["🏷️","Issue #42 · ai-ready","Add dark mode toggle","#fff3bf"],["🌿","Worktree","issue-42 · isolated branch","#e0f2fe"],["🤖","2 agent reviewers","both approve ✓ ✓","#ede9fe"],["✅","Pull request #43","reviewed · ready to merge","#d1fae5"]];
+N4.forEach((n,i)=>{const d=el("card node",`<div class="ic" style="background:${n[3]}">${n[0]}</div><div><h4>${n[1]}</h4><p>${n[2]}</p></div>`,{left:"70px",top:(270+i*175)+"px"});d.id="n4"+i;$("nodes4").appendChild(d);
+  if(i<3){const l=document.createElementNS("http://www.w3.org/2000/svg","line");l.setAttribute("x1",470);l.setAttribute("x2",470);l.setAttribute("y1",270+i*175+118);l.setAttribute("y2",270+(i+1)*175);l.setAttribute("stroke-dasharray",57);$("flow4").appendChild(l);}});
+const LIBS=[["js-common","TypeScript utilities + a CLI","TS","v6.2"],["api-common","Node.js API building blocks","TS",""],["browser-common","40+ browser Web APIs","TS","v3.0"],["react-common","React 19 UI primitives","TS","v1.0"],
+ ["cf-common","Cloudflare bindings & APIs","TS","v2.0"],["db-common","Database utilities for Node","TS","v1.6"],["supabase-common","Supabase client, auth & DB","TS","v1.9"],["swift-common","SwiftUI views & helpers","Swift",""]];
+LIBS.forEach((l,i)=>{const d=el("card lib",`<h3>${l[0]}</h3><p>${l[1]}</p><div class="row"><span class="chip" style="background:${l[2]=="Swift"?"#ffedd5":"#dbeafe"};color:${l[2]=="Swift"?"#c2410c":"#1d4ed8"}">${l[2]}</span>${l[3]?`<span class="chip" style="background:#f3f4f6;color:#374151">${l[3]}</span>`:""}</div>`,
+  {left:(130+(i%4)*425)+"px",top:(270+Math.floor(i/4)*250)+"px"});d.id="lb"+i;$("libs").appendChild(d);});
+const PR=[['<img src="mascot-green.png" style="height:118px;background:#0a1422;border-radius:30px;padding:6px">',"homelab-nut","UPS / NUT shutdown automation","Go","#e0f2fe","#0369a1"],
+ ["🐝","buzz-dashboard","Dashboard for my Buzz agent hive","TS","#dbeafe","#1d4ed8"],["🛡️","pentest","Docker security sweep → ranked report","Shell","#f3f4f6","#374151"]];
+PR.forEach((p,i)=>{const d=el("card prod",`<div class="ic">${p[0]}</div><div><h3>${p[1]}</h3><p>${p[2]}</p><span class="chip" style="margin-top:10px;background:${p[4]};color:${p[5]}">${p[3]}</span></div>`,{left:"980px",top:(290+i*230)+"px"});d.id="pr"+i;$("prods").appendChild(d);});
+const F9=[["⌨️","Claude Code","writes the change","#ede9fe"],["🤖","Review agents","two reviewers check it","#e0f2fe"],["✋","Me","read it, merge by hand","#d1fae5"]];
+F9.forEach((f,i)=>{const d=el("card flow",`<div class="ic" style="background:${f[3]}">${f[0]}</div><h3>${f[1]}</h3><p>${f[2]}</p>`,{left:(160+i*560)+"px",top:"380px"});d.id="f9"+i;$("flows").appendChild(d);
+  if(i<2){const l=document.createElementNS("http://www.w3.org/2000/svg","line");const x=160+i*560+480;l.setAttribute("x1",x+12);l.setAttribute("x2",x+68);l.setAttribute("y1",530);l.setAttribute("y2",530);l.setAttribute("stroke-dasharray",56);$("flow9").appendChild(l);}});
+const stamp=el("abs",'MERGED',{left:"1395px",top:"710px",font:"900 34px 'Inter Display'",letterSpacing:".12em",color:"#047857",border:"4px solid #047857",borderRadius:"10px",padding:"4px 16px",background:"#fff"});stamp.id="stamp9";$("b9").appendChild(stamp);
+[["📚","docs.torcato.dev","Docs for every package"],["🐙","github.com/rtorcato","Source for all 14 projects"],["📄","resume.torcato.dev","30 years of work"]].forEach((r,i)=>{
+  const d=el("card node",`<div class="ic" style="background:#eef2ff">${r[0]}</div><div><h4 style="font-family:'DejaVu Sans Mono';font-size:30px;letter-spacing:-.04em">${r[1]}</h4><p style="font-family:'Inter Display'">${r[2]}</p></div>`,{left:"980px",top:(370+i*132)+"px",width:"860px"});d.id="k"+i;$("links10").appendChild(d);});
+C.captions.forEach(c=>{const d=el("pill",esc(c.text),{left:c.x+"px",top:c.y+"px"});d.id=c.id;$("caps").appendChild(d);});
+
+// ---- helpers ----
+function pillAnim(e,u,s,out){const x=eo(P(u,s,.4)),sc=spr(P(u,s,.6));let o=x>0?1:0;if(out!==undefined)o*=1-eo(P(u,out,.25));
+  e.style.clipPath=`inset(0 ${(1-x)*100}% 0 0 round 14px)`;e.style.transform=`translateX(-50%) rotate(-1.5deg) scale(${lerp(.9,1,sc)})`;e.style.opacity=o;}
+function popIn(e,u,s,dy=70){const a=spr(P(u,s,.8));e.style.opacity=clamp(P(u,s,.2));e.style.transform=`translateY(${(1-a)*dy}px) scale(${lerp(.94,1,a)})`;}
+function slideX(e,u,s,dx){const a=spr(P(u,s,.8));e.style.opacity=clamp(P(u,s,.2));e.style.transform=`translateX(${(1-a)*dx}px)`;}
+function strip(h){const d=document.createElement("div");d.innerHTML=h;return d.textContent;}
+const CUR=c=>`<span style="background:${c};color:#0a0e16">&nbsp;</span>`;
+function termAnim(id,L,u){L.forEach((x,i)=>{const e=$(id+"_"+i),[s,h,typed]=x;if(u<s){e.innerHTML="";return;}
+  if(typed){const cmd=strip(h).replace(/^\$ /,""),n=Math.floor(clamp((u-s)*24,0,cmd.length)),next=L[i+1]?L[i+1][0]:1e9;
+    const cur=(u<next&&(n<cmd.length||Math.floor(u*2.5)%2===0))?CUR("#e6e7ef"):"";
+    e.innerHTML=n>=cmd.length?h+cur:'<span class="m">$</span> '+esc(cmd.slice(0,n))+cur;}
+  else{const a=eo(P(u,s,.3));e.innerHTML=h;e.style.opacity=a;e.style.transform=`translateX(${(1-a)*20}px)`;}});}
+function typeInto(e,u,s,text,cps){const n=Math.floor(clamp((u-s)*cps,0,text.length));e.innerHTML=esc(text.slice(0,n))+((n<text.length||Math.floor(u*2.5)%2===0)?CUR("#e6e7ef"):"&nbsp;");}
+function holePath({x,y,w:W,h:H,r}){return `path(evenodd,"M0 0H1920V1080H0Z M${x+r} ${y}H${x+W-r}A${r} ${r} 0 0 1 ${x+W} ${y+r}V${y+H-r}A${r} ${r} 0 0 1 ${x+W-r} ${y+H}H${x+r}A${r} ${r} 0 0 1 ${x} ${y+H-r}V${y+r}A${r} ${r} 0 0 1 ${x+r} ${y}Z")`;}
+
+// ---- per-beat animation, u = seconds into the beat ----
+const anim={
+ b1(u){popIn($("pf"),u,.25,-40);[0,1,2].forEach(i=>popIn($("s1"+i),u,1.3+i*.18,60));},
+ b2(u){LOOP.forEach((w,i)=>{const e=$("lw"+i),a=spr(P(u,.3+i*.55,.7));e.style.opacity=clamp(P(u,.3+i*.55,.2));e.style.transform=`translateY(${(1-a)*80}px) scale(${lerp(.7,1,a)})`;
+     const lit=i===Math.floor(clamp((u-.3)/.55,0,3.99));e.style.textShadow=lit&&u<3.2?"0 0 40px rgba(255,255,255,.5)":"none";});
+   $("loopline").style.transform=`scaleX(${eio(P(u,.4,2.4))})`;
+   [0,1,2,3].forEach(i=>{const e=$("st2"+i);popIn(e,u,3.1+i*.15,60);const v=parseInt(e.dataset.v),k=eo(P(u,3.3+i*.15,1.1));
+     $("sv"+i).textContent=v>1000?Math.round(lerp(1990,v,k)):Math.round(v*k);});},
+ b3(u){popIn($("st3"),u,.1,-50);popIn($("term3"),u,.35,70);termAnim("l3",L3,u);pillAnim($("p3"),u,6.0);},
+ b4(u){popIn($("st4"),u,.1,-40);popIn($("cmd4"),u,.5,-20);N4.forEach((n,i)=>slideX($("n4"+i),u,1.0+i*1.1,-80));
+   $("flow4").querySelectorAll("line").forEach((l,i)=>l.setAttribute("stroke-dashoffset",57*(1-eo(P(u,1.7+i*1.1,.4)))));
+   const pr=$("n4"+3),k=spr(P(u,4.3,.6));if(u>4.3)pr.style.transform+=` scale(${lerp(1,1.04,Math.sin(Math.PI*clamp(P(u,4.3,.5))))})`;},
+ b5(u){popIn($("st5"),u,.1,-50);const c=spr(P(u,.4,.6));$("cmd5").style.opacity=clamp(P(u,.4,.2));$("cmd5").style.transform=`translateX(-50%) scale(${lerp(.9,1,c)})`;
+   typeInto($("cmd5t"),u,.7,"npx @rtorcato/brand-kit",24);["o1","o2","o3"].forEach((id,i)=>popIn($(id),u,2.0+i*.35,90));slideX($("o4"),u,3.4,-60);},
+ b7(u){popIn($("st7"),u,.1,-50);LIBS.forEach((l,i)=>{const e=$("lb"+i),s=.7+i*.16,a=spr(P(u,s,.8));e.style.opacity=clamp(P(u,s,.2));e.style.transform=`translateY(${(1-a)*90}px) rotate(${(1-a)*(i%2?3:-3)}deg)`;});pillAnim($("p7"),u,6.2);},
+ b8(u){popIn($("st8"),u,.1,-40);PR.forEach((p,i)=>slideX($("pr"+i),u,1.0+i*2.2,120));},
+ b9(u){popIn($("st9"),u,.1,-50);F9.forEach((f,i)=>popIn($("f9"+i),u,.8+i*1.0,80));
+   $("flow9").querySelectorAll("line").forEach((l,i)=>l.setAttribute("stroke-dashoffset",56*(1-eo(P(u,1.5+i*1.0,.4)))));
+   const s=spr(P(u,3.2,.5));$("stamp9").style.opacity=clamp(P(u,3.2,.15));$("stamp9").style.transform=`scale(${lerp(1.8,1,s)}) rotate(${lerp(-12,-6,s)}deg)`;},
+ b10(u){popIn($("h10"),u,.2,-50);[0,1,2].forEach(i=>slideX($("k"+i),u,.8+i*.25,100));popIn($("inst10"),u,1.8,40);typeInto($("inst10t"),u,2.2,"npx @rtorcato/repo-tooling",20);}
+};
+
+// ---- render ----
+window.render=function(t){
+  const L=window.LAYER, beat=C.beats.find(b=>t>=b.start&&t<b.end)||C.beats[C.beats.length-1], u=t-beat.start;
+  const showCam=L==="cam"||L==="preview", showGfx=L==="gfx"||L==="preview", showCap=L==="cap"||L==="preview";
+  const cam=$("cam");cam.style.display=showCam?"block":"none";$("voline").textContent=beat.vo;$("recdot").style.opacity=(Math.floor(t*2)%2)?1:.25;
+  $("tc").textContent=`${String(Math.floor(t/60)).padStart(2,"0")}:${String(Math.floor(t%60)).padStart(2,"0")}`;
+  const win=beat.mode==="pipL"?C.window.left:beat.mode==="pipR"?C.window.right:null;
+  if(L==="preview"&&win){const k=C.window.cameraScale,dx=(win.x+win.w/2)-960,dy=(win.y+win.h/2)-540;cam.style.transform=`translate(${dx}px,${dy}px) scale(${k})`;}else cam.style.transform="none";
+  const bg=$("bg"),ring=$("ring");
+  if(showGfx&&beat.mode!=="cam"){bg.style.display="block";bg.className="bg-"+beat.bg;bg.style.clipPath=win?holePath(win):"none";
+    if(win){ring.style.display="block";Object.assign(ring.style,{left:(win.x-4)+"px",top:(win.y-4)+"px",width:(win.w+8)+"px",height:(win.h+8)+"px"});}else ring.style.display="none";}
+  else{bg.style.display="none";ring.style.display="none";}
+  document.querySelectorAll(".scene").forEach(s=>s.style.display="none");
+  if(showGfx&&beat.mode!=="cam"&&$(beat.id)){$(beat.id).style.display="block";anim[beat.id](u);}
+  C.captions.forEach(c=>{const e=$(c.id);if(showCap&&t>=c.start&&t<c.end){e.style.display="block";pillAnim(e,t,c.start,c.end-.25);}else e.style.display="none";});
+};
+window.render(0);
+</script>
+</body></html>

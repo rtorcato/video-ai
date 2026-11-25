@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000;font-family:"Inter Display","Inter",sans-serif;-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+.bg{position:absolute;inset:0}
+#bgPurple{background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.28),transparent 55%),linear-gradient(135deg,#5b5cf0 0%,#7c5cf5 45%,#c26bd6 100%)}
+#bgBlue{background:radial-gradient(ellipse at 45% 35%,rgba(255,255,255,.32),transparent 55%),linear-gradient(160deg,#4f7cf7 0%,#6f78f6 55%,#9a6df2 100%)}
+#bgGreen{background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.35),transparent 55%),linear-gradient(170deg,#2fae86 0%,#5cc79f 55%,#8fdcc0 100%)}
+.scene{position:absolute;inset:0}
+.card{position:absolute;background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(40,20,120,.28),0 4px 12px rgba(40,20,120,.12)}
+.dots{display:flex;gap:8px}
+.dots i{width:13px;height:13px;border-radius:50%;display:block}
+.pill{position:absolute;background:#ffd43b;color:#16161d;font-weight:850;font-size:60px;letter-spacing:-.035em;padding:6px 26px 10px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);white-space:nowrap}
+.cam{position:absolute;border-radius:30px;overflow:hidden;background:radial-gradient(ellipse at 70% 20%,rgba(160,110,255,.45),transparent 60%),linear-gradient(170deg,#262b3d,#16182a);box-shadow:0 30px 70px rgba(20,10,80,.45);border:4px solid rgba(255,255,255,.55)}
+.cam .hd{position:absolute;left:290px;top:250px;width:200px;height:230px;border-radius:50%;background:#3b4157}
+.cam .sh{position:absolute;left:150px;top:500px;width:480px;height:460px;border-radius:200px 200px 0 0;background:#3b4157}
+.cam .lb{position:absolute;left:30px;top:30px;font:700 24px 'Inter Display';color:#fff;background:rgba(0,0,0,.4);padding:8px 16px;border-radius:12px}
+.chk{position:absolute;width:820px;height:118px;border-radius:24px;display:flex;align-items:center;gap:26px;padding:0 30px}
+.chk .b{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 32px "Inter Display";flex:none}
+.chk h4{font-size:38px;font-weight:850;letter-spacing:-.03em}
+.chk p{font-size:21px;font-weight:600;margin-top:2px}
+.step{position:absolute;left:0;width:1920px;text-align:center;top:70px}
+.step .tag{display:inline-block;font:900 26px "Inter Display";letter-spacing:.14em;color:#fff;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.5);border-radius:999px;padding:6px 22px}
+.step h2{font-size:92px;font-weight:900;letter-spacing:-.05em;color:#fff;margin-top:14px;text-shadow:0 8px 30px rgba(30,20,110,.3)}
+.term{position:absolute;background:#13151f;border-radius:24px;box-shadow:0 30px 70px rgba(10,10,40,.45);border:2px solid rgba(255,255,255,.12);padding:24px 34px;font-family:"DejaVu Sans Mono",monospace;color:#e6e7ef}
+.term .ttl{position:absolute;top:20px;left:0;width:100%;text-align:center;font:600 18px "Inter Display";color:#8a8fa8}
+.term .ln{white-space:pre;height:1.6em}
+.k{color:#c792ea}.s{color:#a5e075}.t{color:#7aa2f7}.a{color:#f2a65a}.c{color:#ffcb6b}.g{color:#5af78e}.m{color:#8a8fa8}.y{color:#ffd43b}
+.big{position:absolute;font-size:330px;font-weight:900;letter-spacing:-.05em;color:rgba(255,255,255,.15);white-space:nowrap}
+.res{position:absolute;width:520px;height:150px;display:flex;align-items:center;gap:26px;padding:0 28px}
+.res .em{width:96px;height:96px;border-radius:26px;background:linear-gradient(150deg,#fff,#ece7ff);box-shadow:inset 0 -10px 20px rgba(120,90,240,.2),0 6px 16px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font:58px "Noto Color Emoji";flex:none}
+.res h4{font-size:38px;font-weight:900;letter-spacing:-.03em;color:#141420}
+.res p{font:500 21px "DejaVu Sans Mono";color:#5b5f72;margin-top:4px}
+.chip{position:absolute;top:330px;height:84px;width:230px;border-radius:20px;display:flex;align-items:center;justify-content:center;font:850 34px "Inter Display";letter-spacing:-.02em}
+.tc{position:absolute;width:440px;height:200px;padding:22px 28px}
+.tc .row{display:flex;align-items:center;gap:16px;margin-top:14px}
+.tc .ic{width:62px;height:62px;border-radius:18px;background:#f3f0ff;display:flex;align-items:center;justify-content:center;font:36px "Noto Color Emoji"}
+.tc h3{font-size:32px;font-weight:850;letter-spacing:-.02em;color:#141420}
+.tc p{font:500 19px "DejaVu Sans Mono";color:#5b5f72;margin-top:2px}
+.tc .bar{height:10px;border-radius:6px;background:#eceef5;margin-top:22px;overflow:hidden}
+.tc .bar b{display:block;height:100%;border-radius:6px;width:0}
+.tc .st{position:absolute;right:24px;top:20px;font-size:18px;font-weight:800;padding:4px 12px;border-radius:999px}
+.logo{display:inline-flex;align-items:center;gap:22px}
+.logo .mk{width:96px;height:96px;border-radius:26px;background:linear-gradient(140deg,#5b5cf0,#c26bd6);display:flex;align-items:center;justify-content:center;color:#fff;font:900 44px "DejaVu Sans Mono";box-shadow:0 10px 24px rgba(90,60,220,.4)}
+</style></head>
+<body>
+<div class="bg" id="bgPurple"></div><div class="bg" id="bgBlue"></div><div class="bg" id="bgGreen"></div>
+
+<!-- S1 intro: camera + what is it -->
+<div class="scene" id="s1">
+  <div class="big" id="big1" style="top:770px">JSX → INFRA</div>
+  <div class="cam" id="cam1" style="left:60px;top:90px;width:780px;height:900px"><div class="hd"></div><div class="sh"></div><div class="lb"><span class="rec" style="color:#ff4d4f">●</span> Your talking head here</div></div>
+  <div class="card" id="h1" style="left:920px;top:90px;width:900px;height:250px;padding:34px 40px">
+    <div style="font-size:24px;font-weight:800;color:#3d4152;letter-spacing:.06em">• NEW TO <span class="brandU"></span>?</div>
+    <div style="font-size:68px;font-weight:900;letter-spacing:-.045em;line-height:1.03;margin-top:12px;color:#111">Infrastructure,<br>written as <span style="color:#4263eb">JSX</span></div>
+  </div>
+  <div id="rows1"></div>
+  <div class="pill" id="p1" style="left:1330px;top:880px">Let's build one.</div>
+</div>
+
+<!-- S2 install -->
+<div class="scene" id="s2">
+  <div class="big" id="big2" style="top:740px">INSTALL</div>
+  <div class="step" id="st2"><span class="tag">STEP 1 OF 4</span><h2>Install the CLI</h2></div>
+  <div class="term" id="term2" style="left:260px;top:400px;width:1400px;height:330px;font-size:34px;padding-top:70px">
+    <div class="dots abs" style="left:28px;top:24px"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+    <div class="ttl">terminal</div>
+    <div class="ln" id="l2a"></div><div class="ln m" id="l2b"></div><div class="ln" id="l2c"></div><div class="ln" id="l2d"></div>
+  </div>
+</div>
+
+<!-- S3 code -->
+<div class="scene" id="s3">
+  <div class="step" id="st3" style="top:40px"><span class="tag">STEP 2 OF 4</span><h2 style="font-size:76px">Describe your stack</h2></div>
+  <div class="term" id="code" style="left:70px;top:250px;width:1200px;height:610px;font-size:25px;padding-top:72px">
+    <div class="dots abs" style="left:28px;top:24px"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+    <div class="ttl">infra/stack.tsx</div>
+    <div id="codelines"></div>
+  </div>
+  <div class="card res" id="rs0" style="left:1330px;top:280px"><div class="em">🗄️</div><div><h4>D1 database</h4><p>notes-db</p></div></div>
+  <div class="card res" id="rs1" style="left:1330px;top:470px"><div class="em">⚡</div><div><h4>Worker</h4><p>api</p></div></div>
+  <div class="card res" id="rs2" style="left:1330px;top:660px"><div class="em">🔑</div><div><h4>Secret</h4><p>API_KEY</p></div></div>
+  <div class="pill" id="p3" style="left:960px;top:910px">Components, not config files.</div>
+</div>
+
+<!-- S4 plan -->
+<div class="scene" id="s4">
+  <div class="step" id="st4" style="top:40px"><span class="tag">STEP 3 OF 4</span><h2 style="font-size:76px">Preview the plan</h2></div>
+  <div id="chips"></div>
+  <svg class="abs" width="1920" height="1080" style="left:0;top:0"><g id="arrows" stroke="rgba(255,255,255,.8)" stroke-width="4" fill="none" stroke-linecap="round"></g></svg>
+  <div class="term" id="term4" style="left:310px;top:470px;width:1300px;height:330px;font-size:30px;padding-top:68px">
+    <div class="dots abs" style="left:28px;top:24px"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+    <div class="ttl">terminal</div>
+    <div id="planlines"></div>
+  </div>
+  <div class="pill" id="p4" style="left:960px;top:860px">Review it like code.</div>
+</div>
+
+<!-- S5 apply -->
+<div class="scene" id="s5">
+  <div class="step" id="st5" style="top:40px"><span class="tag">STEP 4 OF 4</span><h2 style="font-size:76px">Apply it</h2></div>
+  <svg class="abs" width="1920" height="1080" style="left:0;top:0"><g id="lines5" stroke="rgba(255,255,255,.75)" stroke-width="4" fill="none" stroke-linecap="round"></g></svg>
+  <div id="hub" class="abs" style="left:810px;top:430px;width:300px;height:300px;border-radius:50%;background:#fff;box-shadow:0 0 0 14px rgba(255,255,255,.35),0 30px 70px rgba(40,20,120,.35);display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-size:30px;font-weight:800;color:#5b5f72;letter-spacing:.04em">YOUR STACK</div>
+    <div style="font-size:84px;font-weight:900;letter-spacing:-.05em;color:#121218;line-height:1.05">notes</div>
+    <div id="cnt5" style="font-size:26px;font-weight:700;color:#5b5f72;margin-top:4px">0 of 3 live</div>
+  </div>
+  <div id="tcs"></div>
+  <div class="pill" id="p5" style="left:960px;top:900px">One command. Live.</div>
+</div>
+
+<!-- S6 outro -->
+<div class="scene" id="s6">
+  <div class="cam" id="cam6" style="left:60px;top:90px;width:780px;height:900px"><div class="hd"></div><div class="sh"></div><div class="lb"><span class="rec" style="color:#ff4d4f">●</span> Your talking head here</div></div>
+  <div class="card" id="h6" style="left:920px;top:90px;width:900px;height:250px;padding:40px 44px">
+    <div class="logo"><div class="mk">&lt;/&gt;</div><div><div class="brand" style="font-size:72px;font-weight:900;letter-spacing:-.05em;color:#111;line-height:1"></div><div style="font:600 28px 'DejaVu Sans Mono';color:#4263eb;margin-top:10px" class="site"></div></div></div>
+  </div>
+  <div id="rows6"></div>
+  <div class="pill" id="p6" style="left:1330px;top:950px">Your turn.</div>
+</div>
+
+<script>
+// ===== swap the product name here =====
+const BRAND="InfraZero", SITE="infrazero.dev", CLI="infrazero", SCOPE="@infrazero";
+// ======================================
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,s,d)=>clamp((t-s)/d);
+const eo=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const spr=x=>x<=0?0:x>=1?1:1-Math.exp(-6*x)*Math.cos(8.5*x);
+const lerp=(a,b,x)=>a+(b-a)*x;
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+document.querySelectorAll(".brand").forEach(e=>e.textContent=BRAND);
+document.querySelectorAll(".brandU").forEach(e=>e.textContent=BRAND.toUpperCase());
+document.querySelectorAll(".site").forEach(e=>e.textContent=SITE);
+
+function mkRows(parentScene,id,list,top,gap){
+  list.forEach((r,i)=>{const d=document.createElement("div");d.className="chk";d.id=id+i;
+    d.style.left="960px";d.style.top=(top+i*gap)+"px";
+    d.innerHTML=`<div class="b">${i+1}</div><div><h4>${r[0]}</h4><p>${r[1]}</p></div>`;$(parentScene).appendChild(d);});
+}
+const rows1=[["Declare infra as components","Cloudflare, DigitalOcean, Stripe…"],["Preview every change","A plan you can review like code"],["Apply with one command","Same file, every environment"]];
+mkRows("s1","a",rows1,400,150);
+const rows6=[["Install the CLI",`npm i -D ${SCOPE}/cli`],["Describe your stack","infra/stack.tsx"],["Preview the plan",`${CLI} plan`],["Apply it",`${CLI} apply`]];
+mkRows("s6","z",rows6,380,135);
+
+// code lines
+const C=[
+ `<span class="k">import</span> { Stack, Worker, D1, Secret } <span class="k">from</span> <span class="s">"${SCOPE}/cloudflare"</span>;`,
+ ``,
+ `<span class="k">export default function</span> <span class="c">App</span>() {`,
+ `  <span class="k">const</span> db = &lt;<span class="t">D1</span> <span class="a">name</span>=<span class="s">"notes-db"</span> /&gt;;`,
+ `  <span class="k">return</span> (`,
+ `    &lt;<span class="t">Stack</span> <span class="a">name</span>=<span class="s">"notes"</span>&gt;`,
+ `      &lt;<span class="t">Worker</span> <span class="a">name</span>=<span class="s">"api"</span> <span class="a">entry</span>=<span class="s">"./src/api.ts"</span> <span class="a">bindings</span>={{ DB: db }} /&gt;`,
+ `      &lt;<span class="t">Secret</span> <span class="a">name</span>=<span class="s">"API_KEY"</span> /&gt;`,
+ `    &lt;/<span class="t">Stack</span>&gt;`,
+ `  );`,
+ `}`];
+C.forEach((h,i)=>{const d=document.createElement("div");d.className="ln";d.id="cl"+i;d.innerHTML=h||" ";$("codelines").appendChild(d);});
+const resAt=[3,6,7]; // code line that introduces each resource
+
+// pipeline chips
+const stages=["Render","Resolve","Validate","Diff","Plan","Apply"];
+stages.forEach((s,i)=>{const d=document.createElement("div");d.className="chip";d.id="ch"+i;d.style.left=(115+i*290)+"px";d.textContent=s;$("chips").appendChild(d);
+  if(i<5){const l=document.createElementNS("http://www.w3.org/2000/svg","line");const x=115+i*290+230;l.setAttribute("x1",x+8);l.setAttribute("x2",x+52);l.setAttribute("y1",372);l.setAttribute("y2",372);l.setAttribute("stroke-dasharray",44);$("arrows").appendChild(l);}});
+const PL=[
+ `<span class="m">$</span> ${CLI} plan`,
+ `<span class="g">+</span> d1      <span class="y">notes-db</span>`,
+ `<span class="g">+</span> worker  <span class="y">api</span>        <span class="m">→ binds DB</span>`,
+ `<span class="g">+</span> secret  <span class="y">API_KEY</span>`,
+ `<span class="m">Plan:</span> <span class="g">3 to add</span>, 0 to change, 0 to destroy`];
+PL.forEach((h,i)=>{const d=document.createElement("div");d.className="ln";d.id="pl"+i;d.innerHTML=h;$("planlines").appendChild(d);});
+
+// apply cards
+const AP=[{t:"notes-db",s:"d1 · created",e:"🗄️",c:"#3b5bdb",x:180,y:300},{t:"api",s:"worker · deployed",e:"⚡",c:"#f76707",x:1300,y:300},{t:"API_KEY",s:"secret · set",e:"🔑",c:"#e64980",x:740,y:-999}];
+AP[2].x=1300;AP[2].y=640; AP.push(null); AP.pop();
+const posAP=[[180,330],[1300,480],[180,640]];
+// put third card bottom-left instead for balance
+
+AP.forEach((k,i)=>{const d=document.createElement("div");d.className="card tc";d.id="ap"+i;d.style.left=posAP[i][0]+"px";d.style.top=posAP[i][1]+"px";
+  d.innerHTML=`<div class="dots"><i style="background:#ff6b6b"></i><i style="background:#fcc419"></i><i style="background:#51cf66"></i></div>
+  <div class="row"><div class="ic">${k.e}</div><div><h3>${k.t}</h3><p>${k.s}</p></div></div><div class="bar"><b style="background:${k.c}"></b></div><div class="st"></div>`;
+  $("tcs").appendChild(d);
+  const cx=posAP[i][0]+220, cy=posAP[i][1]+100;const l=document.createElementNS("http://www.w3.org/2000/svg","line");
+  l.setAttribute("x1",960);l.setAttribute("y1",580);l.setAttribute("x2",cx);l.setAttribute("y2",cy);const len=Math.hypot(cx-960,cy-580);l.setAttribute("stroke-dasharray",len);l.dataset.len=len;$("lines5").appendChild(l);});
+
+function vis(el,t,a,b){const i=eo(P(t,a,.45)),o=1-eio(P(t,b-.45,.45)),v=Math.min(i,o);
+  el.style.opacity=v;el.style.filter=v>=.999?"none":`blur(${(1-v)*22}px)`;el.style.display=v<=.001?"none":"block";return v;}
+function pill(el,t,s){const x=eo(P(t,s,.4)),sc=spr(P(t,s,.6));el.style.clipPath=`inset(0 ${(1-x)*100}% 0 0 round 14px)`;
+  el.style.transform=`translateX(-50%) rotate(-1.5deg) scale(${lerp(.9,1,sc)})`;el.style.opacity=x>0?1:0;}
+function stepHead(el,t,s){const a=spr(P(t,s,.8));el.style.opacity=clamp(P(t,s,.25));el.style.transform=`translateY(${(1-a)*-50}px)`;}
+function camIn(el,t,s){const c=spr(P(t,s,.9));el.style.transform=`translateX(${(1-c)*-900}px)`;}
+function cardDrop(el,t,s){const h=spr(P(t,s,.8));el.style.opacity=clamp(P(t,s,.2));el.style.transform=`translateY(${(1-h)*-60}px)`;}
+function rowsAnim(prefix,n,t,inAt,tickAt,tickGap){
+  for(let i=0;i<n;i++){const el=$(prefix+i),a=spr(P(t,inAt+i*.15,.8));el.style.opacity=clamp(P(t,inAt+i*.15,.25));
+    let tf=`translateX(${(1-a)*80}px)`;const on=P(t,tickAt+i*tickGap,.35),onS=spr(P(t,tickAt+i*tickGap,.6)),b=el.querySelector(".b");
+    if(on>0){el.style.background=`rgba(255,255,255,${lerp(.22,1,on)})`;el.style.boxShadow=`0 ${20*on}px ${50*on}px rgba(30,20,110,${.25*on})`;
+      b.textContent="✓";b.style.background="#2f9e44";b.style.color="#fff";b.style.fontSize="38px";b.style.transform=`scale(${lerp(.3,1,onS)})`;
+      el.querySelector("h4").style.color=`rgb(${lerp(255,17,on)},${lerp(255,17,on)},${lerp(255,24,on)})`;el.querySelector("p").style.color=`rgba(70,74,92,${on})`;
+      tf+=` scale(${lerp(1,1.03,Math.sin(Math.PI*on))})`;}
+    else{el.style.background="rgba(255,255,255,.22)";el.style.boxShadow="none";b.textContent=i+1;b.style.background="rgba(255,255,255,.25)";b.style.color="rgba(255,255,255,.85)";b.style.fontSize="32px";b.style.transform="none";
+      el.querySelector("h4").style.color="rgba(255,255,255,.8)";el.querySelector("p").style.color="rgba(255,255,255,.65)";}
+    el.style.transform=tf;}
+}
+function typeLine(el,t,s,text,cps,prompt=true){const n=Math.floor(clamp((t-s)*cps,0,text.length));
+  if(t<s){el.innerHTML="";return false;}
+  const cur=(n<text.length||Math.floor(t*2.5)%2===0)?'<span style="background:#e6e7ef;color:#13151f">&nbsp;</span>':'&nbsp;';
+  el.innerHTML=(prompt?'<span class="m">$ </span>':'')+esc(text.slice(0,n))+cur;return n>=text.length;}
+
+const T={s1:[-1,7.8],s2:[7.4,13.2],s3:[12.8,21.4],s4:[21.0,28.4],s5:[28.0,34.4],s6:[34.0,40.4]};
+window.DURATION=40.4;
+window.render=function(t){
+  $("bgBlue").style.opacity=eio(P(t,7.4,.8))*(1-eio(P(t,21,.8)))+eio(P(t,34,.8));
+  $("bgGreen").style.opacity=eio(P(t,21,.8))*(1-eio(P(t,28,.8)));
+  document.querySelectorAll(".rec").forEach(e=>e.style.opacity=(Math.floor(t*2)%2)?1:.25);
+
+  // S1
+  vis($("s1"),t,...T.s1);
+  $("big1").style.transform=`translateX(${lerp(900,-200,P(t,0,7.8))}px)`;
+  camIn($("cam1"),t,.2); cardDrop($("h1"),t,.6);
+  rowsAnim("a",3,t,1.1,2.6,1.0);
+  pill($("p1"),t,5.9);
+
+  // S2
+  vis($("s2"),t,...T.s2);
+  $("big2").style.transform=`translateX(${lerp(500,-300,P(t,7.4,5.8))}px)`;
+  stepHead($("st2"),t,7.6);
+  const tm=spr(P(t,7.9,.8));$("term2").style.opacity=clamp(P(t,7.9,.2));$("term2").style.transform=`translateY(${(1-tm)*80}px) scale(${lerp(.94,1,tm)})`;
+  const cmd1=`npm i -D ${SCOPE}/cli ${SCOPE}/cloudflare`;
+  const d1=typeLine($("l2a"),t,8.5,cmd1,26);
+  if(d1)$("l2a").innerHTML='<span class="m">$ </span>'+esc(cmd1);
+  $("l2b").textContent=t>10.4?"added 42 packages in 3s":"";
+  const cmd2=`npx ${CLI} init`;
+  const d2=typeLine($("l2c"),t,10.8,cmd2,20);
+  if(d2&&t>11.8)$("l2c").innerHTML='<span class="m">$ </span>'+esc(cmd2);
+  $("l2d").innerHTML=t>11.8?'<span class="g">✓</span> Created <span class="y">infra/stack.tsx</span>':"";
+  if(t<10.8) $("l2c").innerHTML="";
+
+  // S3
+  vis($("s3"),t,...T.s3);
+  stepHead($("st3"),t,13.0);
+  const cd=spr(P(t,13.2,.8));$("code").style.opacity=clamp(P(t,13.2,.2));$("code").style.transform=`translateX(${(1-cd)*-120}px)`;
+  C.forEach((h,i)=>{const s=13.8+i*.42,el=$("cl"+i),a=eo(P(t,s,.35));el.style.opacity=a;el.style.transform=`translateX(${(1-a)*24}px)`;
+    const hl=Math.sin(Math.PI*P(t,s,.9));el.style.background=resAt.includes(i)?`rgba(122,162,247,${.22*hl})`:"none";});
+  resAt.forEach((li,i)=>{const s=13.8+li*.42+.15,el=$("rs"+i),a=spr(P(t,s,.8));el.style.opacity=clamp(P(t,s,.2));el.style.transform=`translateX(${(1-a)*140}px) scale(${lerp(.8,1,a)})`;});
+  pill($("p3"),t,19.0);
+
+  // S4
+  vis($("s4"),t,...T.s4);
+  stepHead($("st4"),t,21.2);
+  stages.forEach((s,i)=>{const el=$("ch"+i),a=spr(P(t,21.6+i*.12,.7));el.style.opacity=clamp(P(t,21.6+i*.12,.2));el.style.transform=`translateY(${(1-a)*60}px)`;
+    const on=i<5?eo(P(t,22.6+i*.38,.3)):0;
+    el.style.background=on>0?`rgba(255,255,255,${lerp(.25,1,on)})`:"rgba(255,255,255,.25)";
+    el.style.color=on>0?`rgb(${lerp(255,20,on)},${lerp(255,110,on)},${lerp(255,80,on)})`:"rgba(255,255,255,.85)";
+    el.style.boxShadow=on>0?`0 14px 34px rgba(0,60,40,${.25*on})`:"none";
+    el.style.border=i===5?"3px dashed rgba(255,255,255,.7)":"3px solid transparent";
+    if(i===4&&on>0)el.style.transform+=` scale(${lerp(1,1.08,Math.sin(Math.PI*clamp(on)))})`;});
+  $("arrows").querySelectorAll("line").forEach((l,i)=>{l.setAttribute("stroke-dashoffset",44*(1-eo(P(t,22.8+i*.38,.3))));});
+  const t4=spr(P(t,24.4,.8));$("term4").style.opacity=clamp(P(t,24.4,.2));$("term4").style.transform=`translateY(${(1-t4)*80}px)`;
+  PL.forEach((h,i)=>{const a=eo(P(t,24.9+i*.32,.3));$("pl"+i).style.opacity=a;$("pl"+i).style.transform=`translateX(${(1-a)*20}px)`;});
+  pill($("p4"),t,26.7);
+
+  // S5
+  vis($("s5"),t,...T.s5);
+  stepHead($("st5"),t,28.2);
+  $("hub").style.transform=`scale(${spr(P(t,28.4,.8))})`;
+  $("lines5").querySelectorAll("line").forEach((l,i)=>l.setAttribute("stroke-dashoffset",l.dataset.len*(1-eio(P(t,28.8+i*.08,.6)))));
+  let live=0;
+  AP.forEach((k,i)=>{const el=$("ap"+i),s=spr(P(t,29.0+i*.15,.9)),fx=posAP[i][0]<960?-120:120;
+    el.style.opacity=clamp(P(t,29.0+i*.15,.25));el.style.transform=`translateX(${(1-s)*fx}px) scale(${lerp(.85,1,s)})`;
+    const fs=29.8+i*.55,f=eio(P(t,fs,1.2));el.querySelector(".bar b").style.width=(f*100)+"%";const st=el.querySelector(".st");
+    if(f>=1){live++;st.textContent="✓ Live";st.style.background="#d3f9d8";st.style.color="#2b8a3e";st.style.transform=`scale(${lerp(.6,1,spr(P(t,fs+1.2,.4)))})`;}
+    else{st.textContent=t<fs?"Queued":"Deploying";st.style.background="#fff3bf";st.style.color="#b7791f";st.style.transform="none";}});
+  $("cnt5").textContent=`${live} of 3 live`;
+  pill($("p5"),t,32.4);
+
+  // S6
+  vis($("s6"),t,T.s6[0],T.s6[1]);
+  camIn($("cam6"),t,34.2); cardDrop($("h6"),t,34.6);
+  rowsAnim("z",4,t,35.0,35.9,.45);
+  pill($("p6"),t,38.0);
+};
+window.render(0);
+</script>
+</body></html>

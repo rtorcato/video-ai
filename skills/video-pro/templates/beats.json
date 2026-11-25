@@ -1,0 +1,149 @@
+{
+  "project": "torcato-dev",
+  "kind": "showcase",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "window": {
+    "left": {
+      "x": 60,
+      "y": 60,
+      "w": 840,
+      "h": 960,
+      "r": 34
+    },
+    "right": {
+      "x": 1020,
+      "y": 60,
+      "w": 840,
+      "h": 960,
+      "r": 34
+    },
+    "cameraScale": 0.9
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "name": "Intro",
+      "mode": "pipL",
+      "bg": "dark",
+      "start": 0,
+      "end": 7,
+      "vo": "I'm Richard Torcato. I've built for the web since 1997, and now I ship open-source tools daily."
+    },
+    {
+      "id": "b2",
+      "name": "The loop",
+      "mode": "gfx",
+      "bg": "dark",
+      "start": 7,
+      "end": 13.5,
+      "vo": "Everything I make runs through one loop: scaffold, build, brand, repeat. Fourteen public projects, all free."
+    },
+    {
+      "id": "b3",
+      "name": "Scaffold: repo-tooling",
+      "mode": "gfx",
+      "bg": "blue",
+      "start": 13.5,
+      "end": 21.5,
+      "vo": "Step one: scaffold. repo-tooling is a wizard that sets up TypeScript, linting, testing and releases for any JavaScript project."
+    },
+    {
+      "id": "b4",
+      "name": "Build: repo-ai",
+      "mode": "pipR",
+      "bg": "violet",
+      "start": 21.5,
+      "end": 30.5,
+      "vo": "Step two: build. repo-ai turns AI-ready GitHub issues into reviewed pull requests, with one worktree per issue and two agent reviewers."
+    },
+    {
+      "id": "b5",
+      "name": "Brand: brand-kit",
+      "mode": "gfx",
+      "bg": "dark",
+      "start": 30.5,
+      "end": 37.5,
+      "vo": "Step three: brand. brand-kit generates a banner, a social card and a favicon for any repo."
+    },
+    {
+      "id": "b6",
+      "name": "Repeat",
+      "mode": "cam",
+      "start": 37.5,
+      "end": 41,
+      "vo": "Then I do it all again."
+    },
+    {
+      "id": "b7",
+      "name": "Libraries",
+      "mode": "gfx",
+      "bg": "blue",
+      "start": 41,
+      "end": 51,
+      "vo": "Underneath are eight libraries: small, tree-shakeable packages for TypeScript, React, Swift, Cloudflare, databases and Supabase."
+    },
+    {
+      "id": "b8",
+      "name": "Products",
+      "mode": "pipL",
+      "bg": "green",
+      "start": 51,
+      "end": 60,
+      "vo": "And real products: homelab-nut automates UPS shutdowns, buzz-dashboard runs my agent hive, and pentest does a Docker-based security sweep."
+    },
+    {
+      "id": "b9",
+      "name": "How I build",
+      "mode": "gfx",
+      "bg": "violet",
+      "start": 60,
+      "end": 67,
+      "vo": "I build with Claude Code and a group of review agents, but every merge is done by hand."
+    },
+    {
+      "id": "b10",
+      "name": "Outro",
+      "mode": "pipL",
+      "bg": "dark",
+      "start": 67,
+      "end": 75,
+      "vo": "It's all free at torcato.dev. Start a repo the way mine start: npx @rtorcato/repo-tooling."
+    }
+  ],
+  "captions": [
+    {
+      "id": "c1",
+      "text": "Shipping daily.",
+      "start": 1.2,
+      "end": 6.9,
+      "x": 1400,
+      "y": 50
+    },
+    {
+      "id": "c2",
+      "text": "Then repeat.",
+      "start": 37.8,
+      "end": 40.9,
+      "x": 960,
+      "y": 60
+    },
+    {
+      "id": "c3",
+      "text": "Merged by hand.",
+      "start": 63.6,
+      "end": 66.9,
+      "x": 960,
+      "y": 900
+    },
+    {
+      "id": "c4",
+      "text": "torcato.dev",
+      "start": 70.8,
+      "end": 74.9,
+      "x": 1400,
+      "y": 950
+    }
+  ]
+}
