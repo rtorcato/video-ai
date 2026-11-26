@@ -39,6 +39,11 @@ What the skills need on your machine:
 
 Then you record yourself reading `SCRIPT.md`, swap your take in for the placeholder (Replace Clip), and edit like any other Resolve project.
 
+## Editing your video
+
+- **video-basic:** you edit the HTML and re-render; the MP4 can't be opened back up. See [Editing a video-basic video](docs/EDITING-BASIC.md).
+- **video-pro:** you edit the timeline in DaVinci Resolve. See [Editing a video-pro video in Resolve](docs/EDITING-PRO.md).
+
 ## Your brand
 
 The skills use your project's own brand when they find one (`brand/`, `DESIGN.md`, logo, mascot). To set it explicitly, add a `brand.json` (colours, fonts, logo, mascot); see [the style guide](skills/video-basic/references/style.md#brand).
