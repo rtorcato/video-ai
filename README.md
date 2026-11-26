@@ -41,7 +41,7 @@ Then you record yourself reading `SCRIPT.md`, swap your take in for the placehol
 
 ## Styles
 
-Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Four more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger, Prompt and Slab render the same sample beats. Details are in [the style guide](skills/video-basic/references/style.md#styles).
+Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Four more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger, Prompt and Slab render the same sample beats. Details are in [the style guide](skills/video-basic/references/style.md#styles). To add your own, see [Adding a new style](docs/ADD-A-STYLE.md).
 
 | Style | Use it for | Still |
 |---|---|---|

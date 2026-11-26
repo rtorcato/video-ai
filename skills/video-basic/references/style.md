@@ -99,6 +99,7 @@ How the style templates work:
 - No gradients in any of them. Walkthrough's phone is an original drawn handset: no real device frame, no OS screenshots and no platform icons.
 - Each one is a normal page with a deterministic `render(t)` and `window.DURATION`, so `render.py` films it the same way. Add beats by appending to `BEATS.beats` with new `start`/`end` times. Each beat type builds itself.
 - They load Google Fonts. Offline, install the fonts locally (the families are named in each page's `<link>`) or set `fonts` in `brand.json`.
+- To add a style of your own, follow [Adding a new style](../../../docs/ADD-A-STYLE.md).
 
 ## Mascots and logos
 
