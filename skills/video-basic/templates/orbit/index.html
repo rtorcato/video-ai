@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--
+  Orbit: space mission control for a younger audience. For launches, feature drops and explainers:
+  the product is the mission and each step is a stage.
+  Deep-space navy (or daylight sky), Space Grotesk headings, Space Mono HUD labels, a mint accent,
+  rocket-orange highlights, a flat ringed planet on a dashed orbit with a satellite dot.
+  Motion is floaty, not slammy: two parallax star layers drift, the satellite makes one orbit per beat,
+  the ring wobbles ±2°, headings rise, HUD labels type on, card rows dock, and each beat change is a
+  0.4s camera pan across the starfield. No gradients, no glow.
+
+  Original by rule: generic space imagery only. No agency logos, mission patches, real spacecraft
+  or anything from a sci-fi franchise.
+
+  Edit the BEATS block (content) and BRAND block (paste your brand.json). Theme: ?theme=light, or change THEME.
+  Render: python3 render.py video index.html out.mp4   (see references/style.md#styles)
+-->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:var(--bg);color:var(--ink);position:relative;-webkit-font-smoothing:antialiased;
+  --sans:"Space Grotesk",sans-serif;--mono:"Space Mono",monospace}
+body.dark{--bg:#070B1F;--panel:#0F1533;--line:#2A3366;--ink:#F2F4FF;--muted:#A3ABD6;--acc:#7CF5C4;--accInk:#04140E;--hot:#FF8A3D;--hotInk:#1A0A00;--star:#C9D0FF;--planet:#5B4BDB;--ring:#B69CFF;--orbit:#3A447A}
+body.light{--bg:#EEF1FA;--panel:#FFFFFF;--line:#C5CBE6;--ink:#0B1030;--muted:#4A5178;--acc:#047857;--accInk:#FFFFFF;--hot:#C2410C;--hotInk:#FFFFFF;--star:#9AA3D4;--planet:#5B4BDB;--ring:#7C5CE0;--orbit:#B3BADB}
+.sky{position:absolute;inset:0;overflow:hidden}
+.layer{position:absolute;left:0;top:0;width:3840px;height:1080px}
+.layer i{position:absolute;border-radius:50%;background:var(--star)}
+.beat{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+svg.space{position:absolute;inset:0;overflow:visible}
+.hud{position:absolute;top:92px;font:700 26px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:pre}
+.hud.l{left:120px} .hud.r{right:120px}
+.hud .dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--acc);margin-right:20px;vertical-align:1px}
+.lbl{font:700 26px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+h1{font:700 200px/0.9 var(--sans);letter-spacing:-.045em;white-space:nowrap}
+h2{font:700 110px/0.95 var(--sans);letter-spacing:-.045em}
+h1 em,h2 em{font-style:normal;color:var(--acc)}
+.sub{font:500 42px/1.3 var(--sans);color:var(--muted)}
+.pills{display:flex;gap:20px}
+.pill{display:inline-flex;align-items:center;gap:16px;background:var(--panel);border:2px solid var(--line);border-radius:999px;padding:14px 28px;font:700 32px/1 var(--mono);color:var(--ink);white-space:nowrap}
+.pill .d{width:16px;height:16px;border-radius:50%;background:var(--acc)}
+.pill .d.h{background:var(--hot)}
+.pill b{color:var(--acc)}
+.panel{background:var(--panel);border:2px solid var(--line);border-radius:28px}
+.brk{position:absolute;width:48px;height:48px;border:0 solid var(--acc)}
+.brk.tl{left:-14px;top:-14px;border-left-width:4px;border-top-width:4px;border-top-left-radius:20px}
+.brk.br{right:-14px;bottom:-14px;border-right-width:4px;border-bottom-width:4px;border-bottom-right-radius:20px}
+.card .hd{display:flex;justify-content:space-between;padding:34px 40px 30px;border-bottom:2px solid var(--line)}
+.row{display:grid;grid-template-columns:96px 1fr auto;align-items:center;height:136px;padding:0 40px;border-top:2px solid var(--line)}
+.card .hd+.row{border-top:0}
+.row .mk{width:44px;height:44px;border-radius:50%;border:4px solid var(--acc)}
+.row .mk.on{background:var(--acc)}
+.row .nm{font:700 40px/1.1 var(--sans)}
+.row .rl{font:500 30px/1.3 var(--sans);color:var(--muted)}
+.chip{font:700 24px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:14px 18px;border:2px solid var(--line);border-radius:999px;color:var(--ink)}
+.chip.h{background:var(--hot);border-color:var(--hot);color:var(--hotInk)}
+.log{padding:56px 60px;font:400 40px/1.65 var(--mono);color:var(--ink)}
+.log>div{white-space:pre}
+.log .pr{color:var(--acc);font-size:28px;display:inline-block;width:46px;vertical-align:4px}
+.log .o{color:var(--muted);padding-left:46px}
+.log .hi{color:var(--hot);font-weight:700;padding-left:46px}
+.log .ok{color:var(--acc);margin-left:40px}
+.cur{background:var(--acc);display:inline-block;width:20px;height:40px;vertical-align:-7px;margin-left:10px}
+.links{display:flex;gap:72px}
+</style></head>
+<body>
+<div class="sky"><div class="layer" id="far"></div><div class="layer" id="near"></div></div>
+<div id="stage"></div>
+<script>
+/* ============ 1. CONTENT: edit these ============ */
+const THEME = new URLSearchParams(location.search).get("theme") || "dark";   // "dark" | "light"
+const BRAND = {};   // paste brand.json here; see references/style.md#brand
+
+// The shared sample beats: Ledger, Prompt and Orbit all render this same content.
+// Wrap a word in *stars* to mark the emphasis word (Orbit sets it in the mint accent).
+// The title accents the part of BEATS.name after its last hyphen ("homelab-*nut*").
+const BEATS = {
+  name: "homelab-nut",
+  tagline: "Graceful UPS shutdown for every machine in your homelab.",
+  url: "docs.torcato.dev/homelab-nut",
+  meta: "Network UPS Tools · CLI",
+  beats: [
+    { type: "title", start: 0, end: 5, kicker: "Open-source tool", cmd: "homelab-nut", flags: ["init", "plan", "apply"] },
+    { type: "card", start: 5, end: 12, kicker: "Step one", title: "Describe your *fleet*.",
+      sub: "init asks which box has the UPS and what must power off cleanly.", cmd: "nut init",
+      cardTitle: "Fleet", cardMeta: "3 hosts", cols: ["Host", "Role", "Shutdown"],
+      rows: [
+        { name: "desktop", role: "client", detail: "at 30% battery", tag: "first" },
+        { name: "nas", role: "client", detail: "at 25% battery", tag: "second" },
+        { name: "gateway", role: "UPS server", detail: "last, after clients", tag: "last", accent: true } ] },
+    { type: "terminal", start: 12, end: 20, kicker: "Step two", title: "Plan, then *apply*.",
+      label: "zsh — homelab-nut", meta: "3 hosts",
+      lines: [
+        { cmd: "nut plan" },
+        { out: "~ desktop upsmon.conf, shutdown@30%" },
+        { out: "~ nas upsmon.conf, shutdown@25%" },
+        { out: "+ gateway upsd, ups.conf, watch daemon" },
+        { hi: "3 hosts, 7 changes." },
+        { cmd: "nut apply" },
+        { ok: "desktop configured" },
+        { ok: "nas configured" },
+        { ok: "gateway configured" } ] },
+    { type: "caption", start: 20, end: 24, kicker: "The pitch", text: "Two *commands*.", hint: "init · apply" },
+    { type: "outro", start: 24, end: 30, kicker: "Get it", title: "Star it on *GitHub*.",
+      cmds: ["gh repo star rtorcato/homelab-nut", "open docs.torcato.dev/homelab-nut"],
+      links: [["Repo", "rtorcato/homelab-nut"], ["Docs", "docs.torcato.dev"], ["License", "MIT · open source"]] } ] };
+
+/* ============ 2. BRAND: brand.json overrides the board tokens ============ */
+const STYLE = "orbit";
+function applyBrand(b, theme) {
+  const s = document.body.style, c = b.colors || {}, f = b.fonts || {};
+  if (c.accent) s.setProperty("--acc", c.accent);
+  if (c[theme]) s.setProperty("--bg", c[theme]);
+  if (f.heading) s.setProperty("--sans", `"${f.heading}",sans-serif`);
+  if (f.mono) s.setProperty("--mono", `"${f.mono}",monospace`);
+  const tok = ((b.styles || {})[STYLE] || {})[theme] || {};      // exact per-style tokens win
+  for (const k in tok) s.setProperty(k.startsWith("--") ? k : "--" + k, tok[k]);
+  if (b.name) BEATS.name = b.name;
+  if (b.url) BEATS.url = b.url;
+}
+document.body.className = STYLE + " " + THEME;
+applyBrand(BRAND, THEME);
+
+/* ============ 3. BUILD ============ */
+const esc = s => String(s).replace(/[&<>"]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
+const em = s => esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>");
+const plain = s => String(s).replace(/\*(.+?)\*/g, "$1");
+const pad = i => String(i + 1).padStart(2, "0");
+const nameHtml = n => { const k = n.lastIndexOf("-"); return k > 0 ? esc(n.slice(0, k + 1)) + `<em>${esc(n.slice(k + 1))}</em>` : esc(n); };
+const clock = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+
+// Seeded RNG: the starfield is identical on every render.
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rand = rng(1969);
+[["far", 84, 2, 3], ["near", 56, 3, 5]].forEach(([id, n, lo, hi]) => {
+  let html = "";
+  for (let k = 0; k < n; k++) {
+    const x = rand() * 1920, y = rand() * 1080, d = lo + Math.round(rand() * (hi - lo)), o = (.35 + rand() * .6).toFixed(2);
+    for (const off of [0, 1920]) html += `<i style="left:${(x + off).toFixed(1)}px;top:${y.toFixed(1)}px;width:${d}px;height:${d}px;opacity:${o}"></i>`;
+  }
+  document.getElementById(id).innerHTML = html;
+});
+
+// A flat planet with a tilted ring passing behind (top half) and in front (bottom half),
+// a dashed orbit and an orange satellite. p = {x, y, r, R, ring, a0}
+let uid = 0;
+function planet(p) {
+  const id = "p" + (uid++), rx = p.r * 1.78, ry = p.r * .42, sw = Math.max(6, p.r * .085);
+  const ring = h => `<ellipse cx="${p.x}" cy="${p.y}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--ring)" stroke-width="${sw}" clip-path="url(#${id}${h})"/>`;
+  return `<svg class="space" width="1920" height="1080" data-planet='${JSON.stringify(p)}'>
+    <defs><clipPath id="${id}b"><rect x="${p.x - 2 * rx}" y="${p.y - 2 * rx}" width="${4 * rx}" height="${2 * rx}"/></clipPath>
+      <clipPath id="${id}f"><rect x="${p.x - 2 * rx}" y="${p.y}" width="${4 * rx}" height="${2 * rx}"/></clipPath>
+      <clipPath id="${id}c"><circle cx="${p.x}" cy="${p.y}" r="${p.r}"/></clipPath></defs>
+    <circle cx="${p.x}" cy="${p.y}" r="${p.R}" fill="none" stroke="var(--orbit)" stroke-width="3" stroke-dasharray="10 14"/>
+    <g class="tilt">${p.ring ? ring("b") : ""}
+      <circle cx="${p.x}" cy="${p.y}" r="${p.r}" fill="var(--planet)"/>
+      <rect x="${p.x - 2 * p.r}" y="${p.y + p.r * .12}" width="${4 * p.r}" height="${2 * p.r}" fill="#000" opacity=".18" clip-path="url(#${id}c)"/>
+      ${p.ring ? ring("f") : ""}</g>
+    <circle class="sat" r="${Math.max(12, p.r * .085)}" fill="var(--hot)"/></svg>`;
+}
+
+const hud = (l, r) => `<div class="hud l"><span class="dot"></span><span data-hud="${esc(l)}"></span></div>
+  <div class="hud r"><span data-hud="${esc(r)}"></span></div>`;
+let stageNo = 0;
+const stage = t => `Stage ${++stageNo} · ${plain(t).replace(/[.!]$/, "")}`;
+const corners = `<div class="brk tl"></div><div class="brk br"></div>`;
+
+// data-in = entrance delay (s); data-fx = rise (default) | fade | dock | type | show
+const B = {
+  title: (b, i) => `${planet({ x: 1460, y: 560, r: 190, R: 440, ring: true, a0: -.75 })}
+    ${hud(`Mission ${pad(i)} · ${b.kicker}`, "@countdown")}
+    <h1 class="abs" data-in=".2" style="left:114px;top:310px;font-size:160px">${nameHtml(BEATS.name)}</h1>
+    <div class="abs sub" data-in=".5" data-fx="fade" style="left:120px;top:490px;width:880px">${esc(BEATS.tagline)}</div>
+    <div class="abs pills" style="left:120px;top:648px">${b.flags.map((f, j) => `<div class="pill" data-in="${.8 + j * .15}" data-fx="dock"><span class="d"></span>${esc(f)}</div>`).join("")}</div>
+    <div class="abs lbl" data-in="1.2" data-fx="fade" style="left:120px;top:968px">${esc(BEATS.url)}</div>`,
+  card: (b, i) => `${planet({ x: 1780, y: 980, r: 120, R: 280, ring: false, a0: -2.4 })}
+    ${hud(stage(b.title), "Alt 408 km")}
+    <h2 class="abs" data-in=".2" style="left:118px;top:190px;width:660px;font-size:100px">${em(b.title)}</h2>
+    <div class="abs sub" data-in=".5" data-fx="fade" style="left:120px;top:440px;width:600px">${esc(b.sub)}</div>
+    <div class="abs pill" data-in=".8" data-fx="fade" style="left:120px;top:690px"><b>$</b>${esc(b.cmd)}</div>
+    <div class="abs panel card" data-in=".4" data-fx="fade" style="left:820px;top:200px;width:980px">${corners}
+      <div class="hd"><span class="lbl">${esc(b.cardTitle)} · ${esc(b.cardMeta)}</span><span class="lbl">${esc(b.cols[2] || "")}</span></div>
+      ${b.rows.map((r, j) => `<div class="row" data-in="${.9 + j * .15}" data-fx="dock"><span class="mk${r.accent ? " on" : ""}"></span>
+        <div><div class="nm">${esc(r.name)}</div><div class="rl">${esc(r.role)} · ${esc(r.detail)}</div></div>
+        <span class="chip${r.accent ? " h" : ""}">${esc(r.tag)}</span></div>`).join("")}
+    </div>`,
+  terminal: (b, i) => {
+    let c = .9, rows = "", open = false;
+    for (const l of b.lines) {
+      if (l.ok && open) { rows = rows.replace(/<span class="cur"><\/span><\/div>$/, `<span class="ok" data-in="${c}" data-fx="show">✓ ${esc(l.ok.split(" ")[0])}</span><span class="cur"></span></div>`); c += .3; continue; }
+      if (l.cmd) { rows += `<div data-in="${c - .2}" data-fx="show"><span class="pr">▸</span><span data-fx="type" data-in="${c}" data-text="${esc(l.cmd)}"></span><span class="cur"></span></div>`; c += l.cmd.length / 30 + .35; open = true; continue; }
+      open = false;
+      const cls = l.hi ? "hi" : l.ok ? "ok" : "o";
+      rows += `<div class="${cls}" data-in="${c}" data-fx="show">${esc(l.hi || l.out || "✓ " + l.ok)}<span class="cur"></span></div>`; c += .3;
+    }
+    return `${hud(stage(b.title), "Mission log")}
+    <h2 class="abs" data-in=".2" style="left:118px;top:190px;white-space:nowrap">${em(b.title)}</h2>
+    <div class="abs panel" data-in=".45" data-fx="fade" style="left:120px;top:360px;width:1680px;height:600px">${corners}<div class="log">${rows}</div></div>`; },
+  caption: (b, i) => `${planet({ x: 960, y: 1210, r: 450, R: 800, ring: true, a0: -2.1 })}
+    ${hud(b.kicker, "@clock")}
+    <h1 class="abs" data-in=".2" style="left:0;width:1920px;top:310px;text-align:center;font-size:190px">${em(b.text)}</h1>
+    <div class="abs lbl" data-in=".6" data-fx="fade" style="left:0;width:1920px;top:524px;text-align:center;color:var(--ink);font-size:34px">${esc(b.hint)}</div>`,
+  outro: (b, i) => `${planet({ x: 1500, y: 540, r: 150, R: 345, ring: true, a0: -.95 })}
+    ${hud("Mission complete", "Next launch")}
+    <h2 class="abs" data-in=".2" style="left:118px;top:230px;white-space:nowrap">${em(b.title)}</h2>
+    <div class="abs" style="left:120px;top:480px;display:grid;gap:22px;justify-items:start">
+      ${b.cmds.map((c, j) => `<div class="pill" data-in="${.6 + j * .15}" data-fx="dock"><span class="d${j ? " h" : ""}"></span>${esc(c)}</div>`).join("")}</div>
+    <div class="abs links" style="left:120px;top:968px">
+      ${b.links.map((l, j) => `<div class="lbl" data-in="${1 + j * .15}" data-fx="fade">${esc(l[0])} · ${esc(l[1])}</div>`).join("")}</div>`,
+};
+const stageEl = document.getElementById("stage");
+const S = BEATS.beats.map((b, i) => {
+  const el = document.createElement("section"); el.className = "beat"; el.innerHTML = B[b.type](b, i); stageEl.appendChild(el);
+  const items = [...el.querySelectorAll("[data-in]")].map(e => ({ e, d: +e.dataset.in, fx: e.dataset.fx || "rise", text: e.dataset.text }));
+  const huds = [...el.querySelectorAll("[data-hud]")].map(e => ({ e, src: e.dataset.hud }));
+  const sv = el.querySelector("svg[data-planet]");
+  const pl = sv && { p: JSON.parse(sv.dataset.planet), tilt: sv.querySelector(".tilt"), sat: sv.querySelector(".sat") };
+  return { b, el, items, huds, pl, curs: [...el.querySelectorAll(".cur")] };
+});
+["700 100px 'Space Grotesk'", "500 50px 'Space Grotesk'", "400 30px 'Space Mono'", "700 30px 'Space Mono'"].forEach(f => document.fonts.load(f));
+
+/* ============ 4. HELPERS ============ */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, s, d) => clamp((t - s) / d);
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const far = document.getElementById("far").style, near = document.getElementById("near").style;
+const wrap = x => ((x % 1920) + 1920) % 1920;
+
+/* ============ 5. RENDER: pure function of t ============ */
+window.DURATION = BEATS.beats[BEATS.beats.length - 1].end;
+window.render = function (t) {
+  // Stars drift 8px/s (near) and 4px/s (far); each beat change pans the camera 260px over 0.4s.
+  let pan = 0; BEATS.beats.forEach((b, i) => { if (i) pan += 260 * eio(P(t, b.start, .4)); });
+  near.transform = `translateX(${-wrap(8 * t + pan)}px)`;
+  far.transform = `translateX(${-wrap(4 * t + pan * .5)}px)`;
+  S.forEach(({ b, el, items, huds, pl, curs }, i) => {
+    const last = i === S.length - 1, on = t >= b.start && (t < b.end || last);
+    el.style.display = on ? "block" : "none"; if (!on) return;
+    const u = t - b.start, dur = b.end - b.start;
+    el.style.opacity = last ? 1 : 1 - eo(P(u, dur - .3, .3));
+    if (pl) {   // one satellite orbit per beat; the ring wobbles ±2° around −18°
+      const a = pl.p.a0 + 2 * Math.PI * u / dur, p = pl.p;
+      pl.sat.setAttribute("cx", (p.x + p.R * Math.cos(a)).toFixed(2));
+      pl.sat.setAttribute("cy", (p.y + p.R * Math.sin(a)).toFixed(2));
+      pl.tilt.setAttribute("transform", `rotate(${(-18 + 2 * Math.sin(u * 1.3)).toFixed(3)} ${p.x} ${p.y})`);
+    }
+    for (const h of huds) {     // HUD labels type on at 30 chars/s; clocks keep ticking
+      const s = h.src === "@countdown" ? "T−" + clock(Math.max(0, Math.ceil(dur - u)))
+              : h.src === "@clock" ? "T+" + clock(t) : h.src;
+      h.e.textContent = s.slice(0, Math.floor(clamp(u * 30, 0, s.length)));
+    }
+    let active = null;
+    for (const it of items) {
+      const e = it.e.style;
+      if (it.fx === "rise") { const p = eo(P(u, it.d, .5)); e.opacity = p; e.transform = `translateY(${(1 - p) * 30}px)`; }
+      else if (it.fx === "fade") { const p = eo(P(u, it.d, .5)); e.opacity = p; e.transform = `translateY(${(1 - p) * 12}px)`; }
+      else if (it.fx === "dock") { const p = eo(P(u, it.d, .45)); e.opacity = p; e.transform = `translateX(${(1 - p) * 48}px)`; }
+      else if (it.fx === "show") { const v = u >= it.d; e.display = v ? (it.e.tagName === "SPAN" ? "inline" : "block") : "none";
+        if (v && it.e.tagName !== "SPAN") active = it.e; }
+      else if (it.fx === "type") { const n = Math.floor(clamp((u - it.d) * 30, 0, it.text.length)); it.e.textContent = it.text.slice(0, n); }
+    }
+    curs.forEach(c => { const mine = active && c.parentNode === active;
+      c.style.display = mine ? "inline-block" : "none"; c.style.opacity = Math.floor(t * 2.5) % 2 ? 1 : .15; });
+  });
+};
+window.render(0);
+</script>
+</body></html>
