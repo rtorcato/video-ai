@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--
+  Ledger: flat editorial. For tutorials, walkthroughs and explainers.
+  Inter Tight 800 headings, IBM Plex Mono labels, numbered sections on a faint column grid, one blue accent.
+  Motion is calm: 40px slides along the grid, no blur, no spring.
+
+  Edit the BEATS block (content) and BRAND block (paste your brand.json). Theme: ?theme=light, or change THEME.
+  Render: python3 render.py video index.html out.mp4   (see references/style.md#styles)
+-->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:var(--bg);color:var(--ink);position:relative;-webkit-font-smoothing:antialiased;
+  --sans:"Inter Tight",Inter,sans-serif;--mono:"IBM Plex Mono",monospace}
+body.dark{--bg:#0F1115;--surf:#181B21;--ink:#F3F4F6;--muted:#A1A7B3;--rule:#2C313A;--acc:#7AA2FF;--accInk:#0F1115;--term:#181B21;--termInk:#E5E7EB;--termMuted:#9CA3AF;--ok:#6EE7A8;--camBg:#1F232B;--camFg:#323845;--camLbl:#C4C9D2}
+body.light{--bg:#F3F4F6;--surf:#FFFFFF;--ink:#111827;--muted:#4B5563;--rule:#D1D5DB;--acc:#1D4ED8;--accInk:#FFFFFF;--term:#111827;--termInk:#E5E7EB;--termMuted:#9CA3AF;--ok:#6EE7A8;--camBg:#D9DCE1;--camFg:#B9BEC7;--camLbl:#1F2937}
+.beat{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+.grid{position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,var(--rule) 0 1px,transparent 1px 160px);opacity:.55}
+.kick{font:600 26px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kick i{font-style:normal;color:var(--acc)}
+h1{font:800 210px/0.9 var(--sans);letter-spacing:-.05em;white-space:nowrap}
+h2{font:800 104px/0.95 var(--sans);letter-spacing:-.04em}
+.sub{font:400 52px/1.2 var(--sans);color:var(--muted);letter-spacing:-.01em}
+.bar{height:10px;background:var(--acc);transform-origin:left}
+.hr{height:2px;background:var(--ink);transform-origin:left}
+.card{background:var(--surf);border:2px solid var(--ink)}
+.card .hd{display:flex;justify-content:space-between;padding:40px 40px 30px;font:800 46px/1 var(--sans);letter-spacing:-.02em}
+.row{display:grid;grid-template-columns:90px 1fr 260px 200px;align-items:center;height:118px;border-top:2px solid var(--rule);padding:0 40px;font:600 42px/1 var(--sans)}
+.row .n{font:600 34px/1 var(--mono);color:var(--acc)}
+.row .r{font:400 32px/1 var(--sans);color:var(--muted)}
+.chip{justify-self:end;font:600 24px/1 var(--mono);letter-spacing:.08em;padding:12px 16px;border:2px solid var(--ink);text-transform:uppercase}
+.chip.a{background:var(--acc);border-color:var(--acc);color:var(--accInk)}
+.term{background:var(--term);color:var(--termInk);font:400 36px/1.55 var(--mono);padding:56px 64px;border:2px solid var(--ink)}
+.term>div:not(.tbar){white-space:pre}
+.term .p{color:var(--termMuted)} .term .ok{color:var(--ok)}
+.tbar{display:flex;justify-content:space-between;font:600 22px/1 var(--mono);letter-spacing:.1em;color:var(--termMuted);text-transform:uppercase;padding-bottom:28px;margin-bottom:30px;border-bottom:1px solid #374151}
+.cur{background:var(--termInk);display:inline-block;width:20px;height:38px;vertical-align:-6px;margin-left:10px}
+.cap{background:var(--acc);color:var(--accInk);font:800 76px/1 var(--sans);letter-spacing:-.03em;padding:26px 40px 30px;white-space:nowrap}
+.num{font:800 460px/.8 var(--sans);letter-spacing:-.06em;color:var(--rule)}
+.links{display:grid;grid-template-columns:repeat(3,520px);font:600 40px/1.4 var(--sans)}
+.cam{position:absolute;background:var(--camBg);overflow:hidden}
+.cam .head{position:absolute;left:50%;top:26%;width:220px;height:220px;border-radius:50%;background:var(--camFg);transform:translateX(-50%)}
+.cam .body{position:absolute;left:50%;top:52%;width:560px;height:420px;border-radius:200px 200px 0 0;background:var(--camFg);transform:translateX(-50%)}
+.cam .lbl{position:absolute;left:28px;top:24px;font:600 22px/1 var(--mono);color:var(--camLbl);letter-spacing:.04em}
+.cam .lbl b{color:#ff4d4d}
+</style></head>
+<body>
+<div id="stage"></div>
+<script>
+/* ============ 1. CONTENT: edit these ============ */
+const THEME = new URLSearchParams(location.search).get("theme") || "dark";   // "dark" | "light"
+const BRAND = {};   // paste brand.json here; see references/style.md#brand
+
+// The shared sample beats: Ledger, Prompt and Slab all render this same content.
+// Wrap a word in *stars* to mark the emphasis word (Slab blocks it; Ledger and Prompt show it plain).
+const BEATS = {
+  name: "homelab-nut",
+  tagline: "Graceful UPS shutdown for every machine in your homelab.",
+  url: "docs.torcato.dev/homelab-nut",
+  meta: "Network UPS Tools · CLI",
+  beats: [
+    { type: "title", start: 0, end: 5, kicker: "Open-source tool", cmd: "homelab-nut", flags: ["init", "plan", "apply"] },
+    { type: "card", start: 5, end: 12, kicker: "Step one", title: "Describe your *fleet*.",
+      sub: "init asks which box has the UPS and what must power off cleanly.", cmd: "nut init",
+      cardTitle: "Fleet", cardMeta: "3 hosts", cols: ["Host", "Role", "Shutdown"],
+      rows: [
+        { name: "desktop", role: "client", detail: "at 30% battery", tag: "first" },
+        { name: "nas", role: "client", detail: "at 25% battery", tag: "second" },
+        { name: "gateway", role: "UPS server", detail: "last, after clients", tag: "last", accent: true } ] },
+    { type: "terminal", start: 12, end: 20, kicker: "Step two", title: "Plan, then *apply*.",
+      label: "zsh — homelab-nut", meta: "3 hosts",
+      lines: [
+        { cmd: "nut plan" },
+        { out: "~ desktop upsmon.conf, shutdown@30%" },
+        { out: "~ nas upsmon.conf, shutdown@25%" },
+        { out: "+ gateway upsd, ups.conf, watch daemon" },
+        { hi: "3 hosts, 7 changes." },
+        { cmd: "nut apply" },
+        { ok: "desktop configured" },
+        { ok: "nas configured" },
+        { ok: "gateway configured" } ] },
+    { type: "caption", start: 20, end: 24, kicker: "The pitch", text: "Two *commands*.", hint: "init · apply" },
+    { type: "outro", start: 24, end: 30, kicker: "Get it", title: "Star it on *GitHub*.",
+      cmds: ["gh repo star rtorcato/homelab-nut", "open docs.torcato.dev/homelab-nut"],
+      links: [["Repo", "rtorcato/homelab-nut"], ["Docs", "docs.torcato.dev"], ["License", "MIT · open source"]] } ] };
+
+/* ============ 2. BRAND: brand.json overrides the board tokens ============ */
+const STYLE = "ledger";
+function applyBrand(b, theme) {
+  const s = document.body.style, c = b.colors || {}, f = b.fonts || {};
+  if (c.accent) s.setProperty("--acc", c.accent);
+  if (c[theme]) s.setProperty("--bg", c[theme]);
+  if (f.heading) s.setProperty("--sans", `"${f.heading}",sans-serif`);
+  if (f.mono) s.setProperty("--mono", `"${f.mono}",monospace`);
+  const tok = ((b.styles || {})[STYLE] || {})[theme] || {};      // exact per-style tokens win
+  for (const k in tok) s.setProperty(k.startsWith("--") ? k : "--" + k, tok[k]);
+  if (b.name) BEATS.name = b.name;
+  if (b.url) BEATS.url = b.url;
+}
+document.body.className = STYLE + " " + THEME;
+applyBrand(BRAND, THEME);
+
+/* ============ 3. BUILD ============ */
+const esc = s => String(s).replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+const plain = s => esc(s).replace(/\*(.+?)\*/g, "$1");
+const pad = i => String(i + 1).padStart(2, "0");
+const kick = (i, k) => `<i>${pad(i)}</i> — ${esc(k)}`;
+// data-in = entrance delay (s); data-fx = slide | wipe | grow | type
+const B = {
+  title: (b, i) => `<div class="grid"></div>
+    <div class="abs kick" data-in=".1" style="left:160px;top:200px">${kick(i, b.kicker)}</div>
+    <h1 class="abs" data-in=".25" style="left:150px;top:300px">${esc(BEATS.name)}</h1>
+    <div class="abs bar" data-in=".6" data-fx="grow" style="left:160px;top:540px;width:320px"></div>
+    <div class="abs sub" data-in=".75" style="left:160px;top:600px;width:1200px">${esc(BEATS.tagline)}</div>
+    <div class="abs kick" data-in="1.1" style="left:160px;top:900px">${esc(BEATS.url)}</div>
+    <div class="abs kick" data-in="1.2" style="right:160px;top:900px">${esc(BEATS.meta)}</div>`,
+  card: (b, i) => `<div class="grid"></div>
+    <div class="abs kick" data-in=".1" style="left:160px;top:160px">${kick(i, b.kicker)}</div>
+    <h2 class="abs" data-in=".2" style="left:156px;top:220px;width:560px">${plain(b.title)}</h2>
+    <div class="abs sub" data-in=".4" style="left:160px;top:470px;width:520px;font-size:40px">${esc(b.sub)}</div>
+    <div class="abs card" data-in=".5" style="left:800px;top:250px;width:960px">
+      <div class="hd">${esc(b.cardTitle)} <span class="kick" style="align-self:center">${esc(b.cardMeta)}</span></div>
+      ${b.rows.map((r, j) => `<div class="row" data-in="${.9 + j * .2}"><span class="n">${pad(j)}</span>${esc(r.name)}<span class="r">${esc(r.role)}</span><span class="chip${r.accent ? " a" : ""}">${esc(r.tag)}</span></div>`).join("")}
+      <div style="height:36px"></div>
+    </div>`,
+  terminal: (b, i) => {
+    let c = .9, rows = "";
+    for (const l of b.lines) {
+      if (l.hi) continue;   // Ledger keeps the log plain; Prompt highlights hi lines
+      if (l.cmd) { rows += `<div${rows ? ' style="margin-top:22px"' : ""}><span class="p">$</span> <span data-in="${c}" data-fx="type" data-text="${esc(l.cmd)}"></span><span class="cur"></span></div>`; c += l.cmd.length / 24 + .35; }
+      else { const h = l.ok ? `<span class="ok">✓</span> ${esc(l.ok)}` : l.hi ? esc(l.hi) : `<span class="p">${esc(l.out)}</span>`;
+        rows += `<div data-in="${c}" data-fx="show">${h}<span class="cur"></span></div>`; c += .3; }
+    }
+    return `<div class="grid"></div>
+    <div class="abs kick" data-in=".1" style="left:160px;top:160px">${kick(i, b.kicker)}</div>
+    <h2 class="abs" data-in=".2" style="left:156px;top:220px;width:520px">${plain(b.title)}</h2>
+    <div class="abs term" data-in=".45" style="left:800px;top:160px;width:960px;height:760px">
+      <div class="tbar"><span>${esc(b.label)}</span><span>${esc(b.meta)}</span></div>${rows}</div>`; },
+  caption: (b, i) => `<div class="cam" style="inset:0"><div class="head"></div><div class="body"></div><div class="lbl"><b>●</b> TALKING HEAD</div></div>
+    <div class="abs" style="left:120px;bottom:120px">
+      <div class="kick" data-in=".2" style="background:var(--bg);color:var(--ink);display:inline-block;padding:14px 20px">${kick(i, b.kicker)}</div>
+      <div class="cap" data-in=".35" data-fx="wipe">${plain(b.text)}</div>
+    </div>`,
+  outro: (b, i) => `<div class="grid"></div>
+    <div class="abs num" data-in=".1" style="right:110px;top:150px">${pad(i)}</div>
+    <div class="abs kick" data-in=".2" style="left:160px;top:200px">${kick(i, b.kicker)}</div>
+    <h1 class="abs" data-in=".3" style="left:150px;top:270px;font-size:170px;width:1100px;white-space:normal">${plain(b.title)}</h1>
+    <div class="abs hr" data-in=".7" data-fx="grow" style="left:160px;top:700px;width:1600px"></div>
+    <div class="abs links" style="left:160px;top:740px">
+      ${b.links.map((l, j) => `<div data-in="${.9 + j * .15}"><div class="kick">${esc(l[0])}</div>${esc(l[1])}</div>`).join("")}
+    </div>`,
+};
+const stage = document.getElementById("stage");
+const S = BEATS.beats.map((b, i) => {
+  const el = document.createElement("section"); el.className = "beat"; el.innerHTML = B[b.type](b, i); stage.appendChild(el);
+  const items = [...el.querySelectorAll("[data-in]")].map(e => ({ e, d: +e.dataset.in, fx: e.dataset.fx || "slide", text: e.dataset.text }));
+  return { b, el, items, curs: [...el.querySelectorAll(".cur")] };
+});
+["800 100px 'Inter Tight'", "400 50px 'Inter Tight'", "600 50px 'Inter Tight'", "400 30px 'IBM Plex Mono'", "600 30px 'IBM Plex Mono'"].forEach(f => document.fonts.load(f));
+
+/* ============ 4. HELPERS ============ */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, s, d) => clamp((t - s) / d);
+const eo = x => 1 - Math.pow(1 - x, 3);
+
+/* ============ 5. RENDER: pure function of t ============ */
+window.DURATION = BEATS.beats[BEATS.beats.length - 1].end;
+window.render = function (t) {
+  S.forEach(({ b, el, items, curs }, i) => {
+    const last = i === S.length - 1, on = t >= b.start && (t < b.end || last);
+    el.style.display = on ? "block" : "none"; if (!on) return;
+    const u = t - b.start, dur = b.end - b.start;
+    el.style.opacity = last ? 1 : 1 - eo(P(u, dur - .35, .35));          // calm fade out, no blur
+    let active = null;
+    for (const it of items) {
+      const p = eo(P(u, it.d, .5)), e = it.e.style;
+      if (it.fx === "slide") { e.opacity = p; e.transform = `translateX(${(p - 1) * 40}px)`; }
+      else if (it.fx === "grow") { e.transform = `scaleX(${p})`; }
+      else if (it.fx === "wipe") { e.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`; }
+      else if (it.fx === "show") { const v = u >= it.d; e.display = v ? "block" : "none"; if (v) active = it.e; }
+      else if (it.fx === "type") { const n = Math.floor(clamp((u - it.d) * 24, 0, it.text.length));
+        it.e.textContent = it.text.slice(0, n); it.e.parentNode.style.visibility = u >= it.d - .3 ? "visible" : "hidden";
+        if (u >= it.d - .3) active = it.e.parentNode; }
+    }
+    curs.forEach(c => { const mine = active && c.parentNode === active;
+      c.style.display = mine ? "inline-block" : "none"; c.style.opacity = Math.floor(t * 2.5) % 2 ? 1 : .15; });
+  });
+};
+window.render(0);
+</script>
+</body></html>

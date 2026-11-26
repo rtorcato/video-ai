@@ -11,6 +11,8 @@ It costs nothing to render: no Remotion license, no paid AI video credits. The v
 
 Read `references/style.md` before writing the page. It has the tokens, animation helpers, `render(t)` rules and pitfalls. `templates/index.html` is a complete working page to start from.
 
+**Other looks:** if the user asks for a different style, or the content suits one better, start from one of `templates/<style>/index.html` instead: `ledger` (flat editorial, tutorials), `prompt` (terminal-first, CLI tools and changelogs), `slab` (bold kinetic type, short social clips) or `walkthrough` (step-by-step phone how-tos). Each has dark and light themes and reads `brand.json`. You fill in its `BEATS` block rather than writing scenes. See [Styles](references/style.md#styles).
+
 **Needs:** Python 3 with `pip install playwright` (then `playwright install chromium`, or use an installed Chrome), and ffmpeg.
 
 ## 1. Research the project (accuracy over polish)
@@ -37,7 +39,7 @@ Give each section its own background and blur-dissolve between scenes. Keep capt
 
 ## 3. Build the page
 
-Work in one folder per video: `index.html`, a copy of `scripts/render.py`, and any assets next to them. Start from `templates/index.html` and replace its scenes. Set `window.DURATION` to the total length.
+Work in one folder per video: `index.html`, a copy of `scripts/render.py`, and any assets next to them. Start from `templates/index.html` and replace its scenes. Set `window.DURATION` to the total length. With a style template, copy `templates/<style>/index.html`, edit `BEATS`, paste `brand.json` into `BRAND`, and set `THEME`. Its `DURATION` comes from the last beat's `end`.
 
 ## 4. Check, then render once
 
