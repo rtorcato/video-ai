@@ -14,6 +14,8 @@ Everything renders from HTML with headless Chrome and ffmpeg. No Remotion licens
 | [`video-pro`](skills/video-pro/SKILL.md) | A layered **DaVinci Resolve** timeline (FCPXML): camera, graphics and caption tracks, a marker with the line to say on every beat, and Fusion title templates for editable text | DaVinci Resolve (free) or Final Cut |
 | `video-hyperframes` *(coming)* | The same style built on [HyperFrames](https://github.com/heygen-com/hyperframes), with live preview and its block catalog | HyperFrames |
 
+Already on Remotion? An optional script exports a finished page as a Remotion project; see [`docs/REMOTION.md`](docs/REMOTION.md). The skills themselves never need Remotion.
+
 ## Install
 
 ```bash
