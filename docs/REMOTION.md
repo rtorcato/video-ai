@@ -51,7 +51,9 @@ my-video-remotion/
   public/page/          a copy of your page and its assets (video-pro: beats.js generated from beats.json)
 ```
 
-Rendered media (`media/`, `stills/`, `*.mp4`) and the Python scripts are left out of the copy.
+Rendered media (`media/`, `stills/`, `*.mp4`), the Python scripts and any symlinks are left out of the copy. The output folder must not contain the page folder, or the other way round, so a re-export can't overwrite its own source. To re-export a page you edited in `public/page/`, copy it somewhere else first.
+
+The page runs with full access to the Remotion project's origin, as it does in Playwright, so only export pages you trust.
 
 ## Open it in Remotion Studio and render
 

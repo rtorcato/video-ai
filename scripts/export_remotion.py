@@ -16,7 +16,7 @@ Then: cd <out-folder> && npm install && npx remotion studio
 Remotion is free only for some users; read docs/REMOTION.md and Remotion's license first.
 Needs only Python 3. Node files live only in <out-folder>; this repo has no package.json.
 """
-import argparse, json, re, shutil, sys
+import argparse, json, math, re, shutil, sys
 from pathlib import Path
 
 REMOTION_VERSION = "4.0.547"  # pinned: remotion and @remotion/cli must match exactly
@@ -48,15 +48,22 @@ def read_config(page_dir, duration):
     if duration is None:
         m = re.search(r"window\.DURATION\s*=\s*([0-9]*\.?[0-9]+)", (page_dir / "index.html").read_text())
         duration = float(m.group(1)) if m else None
-    if not duration or duration <= 0:
+    if not duration or not math.isfinite(duration) or duration <= 0:
         fail("no duration: pass --duration, set window.DURATION in the page, or add beats.json")
     return fps, width, height, duration, cfg
 
 
 def copy_page(page_dir, dest):
-    def ignore(_dir, names):
-        return [n for n in names if n in SKIP or n.endswith(SKIP_SUFFIXES)]
-    shutil.copytree(page_dir, dest, ignore=ignore, symlinks=False)
+    def ignore(folder, names):
+        skipped = []
+        for n in names:
+            if n in SKIP or n.endswith(SKIP_SUFFIXES):
+                skipped.append(n)
+            elif (Path(folder) / n).is_symlink():  # never follow a link out of the page folder
+                print(f"skipped symlink: {Path(folder) / n}", file=sys.stderr)
+                skipped.append(n)
+        return skipped
+    shutil.copytree(page_dir, dest, ignore=ignore)
 
 
 def ts(value):
@@ -192,8 +199,9 @@ def main():
     page_dir, out = a.page_dir.resolve(), a.out_dir.resolve()
     if not (page_dir / "index.html").is_file():
         fail(f"{page_dir} has no index.html")
-    if out == page_dir or page_dir in out.parents:
-        fail("write the export outside the page folder")
+    if out == page_dir or page_dir in out.parents or out in page_dir.parents:
+        fail("the page folder and the output folder must not contain each other "
+             "(to re-export an edited public/page, copy it somewhere else first)")
     if out.exists() and any(out.iterdir()) and not a.force:
         fail(f"{out} is not empty (use --force to write into it)")
 
@@ -202,6 +210,8 @@ def main():
     layer = a.layer or ("preview" if cfg else None)
 
     page_dest = out / "public" / "page"
+    if page_dest.is_symlink() or (out / "public").is_symlink():
+        fail(f"{page_dest} or its parent is a symlink; remove it and export again")
     if page_dest.exists():
         shutil.rmtree(page_dest)
     copy_page(page_dir, page_dest)
