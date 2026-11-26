@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!--
+  Gameshow: quiz-show explainer. For punchy 30–60s quizzes and myth-busters: one question per feature,
+  the answer reveal is the payoff, and the host VO carries the jokes.
+  Black (or pale grey) stage, Archivo wide 900 uppercase, A–D keycap options, a yellow tile, red buzzer accents.
+  Motion: bulb border chases, the question tile spins in, options pop A→D, a 10-tick countdown ring,
+  a freeze-then-reveal with a CORRECT stamp, split-flap score. Beats are hard cuts on the VO punchline.
+
+  Original by rule: genre only. No logo, host character, screen layout, numbered answers, music or SFX
+  from any commercial trivia game. Any buzzer/tick SFX you add must be original or CC0.
+
+  Edit the BEATS block (content) and BRAND block (paste your brand.json). Theme: ?theme=light, or change THEME.
+  Render: python3 render.py video index.html out.mp4   (see references/style.md#styles)
+-->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,100..125,600..900;1,100..125,600&family=JetBrains+Mono:wght@400;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:var(--stage);color:var(--ink);position:relative;-webkit-font-smoothing:antialiased;
+  --disp:Archivo,"Arial Black",sans-serif;--sans:Archivo,sans-serif;--mono:"JetBrains Mono",monospace}
+body.dark{--stage:#08080A;--surface:#141418;--ink:#FFFFFF;--muted:#A6A6B2;--yel:#FFD60A;--yelInk:#0A0A0C;--red:#FF4D6A;--redInk:#0A0A0C;--out:#73737F;--tick:#26262E}
+body.light{--stage:#F4F5F8;--surface:#FFFFFF;--ink:#0A0A0C;--muted:#4A4A57;--yel:#FFD60A;--yelInk:#0A0A0C;--red:#C8102E;--redInk:#FFFFFF;--out:#83848F;--tick:#DADBE2}
+.beat{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+.d{font-family:var(--disp);font-weight:900;font-stretch:125%;text-transform:uppercase;line-height:.92;letter-spacing:-.01em}
+.red{color:var(--red)}
+.tag{font:800 30px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;color:var(--muted)}
+.qchip{display:inline-block;background:var(--yel);color:var(--yelInk);padding:14px 18px;margin-right:26px;letter-spacing:.06em;font-size:32px}
+.chip{display:inline-block;background:var(--yel);color:var(--yelInk);padding:16px 18px}
+.bulb{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--yel)}
+.bulb.off{background:var(--tick)}
+.tile{position:absolute;background:var(--yel);color:var(--yelInk);display:flex;align-items:center;justify-content:center}
+.sticker{position:absolute;background:var(--red);color:var(--redInk);font-family:var(--disp);font-weight:900;font-stretch:125%;padding:18px 34px;white-space:nowrap}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.opt{position:relative;display:flex;align-items:center;gap:32px;background:var(--surface);border:6px solid var(--ink);padding:28px 28px;color:var(--ink);
+  font-family:var(--sans);font-weight:800;font-stretch:110%;font-size:56px;line-height:1;white-space:nowrap;transform-origin:center}
+.opt .key{flex:none;width:88px;height:88px;display:flex;align-items:center;justify-content:center;background:var(--ink);color:var(--surface);
+  font-family:var(--disp);font-weight:900;font-stretch:125%;font-size:54px}
+.sm .opt{font-size:44px;gap:28px;padding:20px 22px}
+.sm .opt .key{width:72px;height:72px;font-size:44px}
+.opt.pick{outline:8px solid var(--red);outline-offset:8px}
+.opt.out{border-color:var(--out);color:var(--out)}
+.opt.out .key{background:var(--out);color:var(--surface)}
+.opt.win{background:var(--yel);border-color:var(--yel);color:var(--yelInk)}
+.opt.win .key{background:var(--yelInk);color:var(--yel)}
+.stamp{position:absolute;border:8px solid var(--red);color:var(--red);font-family:var(--disp);font-weight:900;font-stretch:125%;font-size:52px;
+  padding:6px 26px;text-transform:uppercase;letter-spacing:.04em;background:var(--stage);white-space:nowrap}
+.ring{position:absolute;width:600px;height:600px}
+.ring i{position:absolute;left:274px;top:0;width:52px;height:96px;background:var(--tick);transform-origin:26px 300px}
+.ring i.on{background:var(--red)}
+.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:900;font-stretch:125%;font-size:300px;line-height:1}
+.flap{display:inline-flex;position:relative;width:150px;height:210px;border:6px solid var(--ink);background:var(--surface);align-items:center;justify-content:center;
+  font:800 170px/1 var(--mono);color:var(--ink);margin-right:12px;overflow:hidden;vertical-align:top}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;background:var(--stage)}
+.comma{display:inline-block;font:900 170px/1 var(--disp);font-stretch:125%;width:60px;margin-right:12px;vertical-align:top;padding-top:70px}
+.prize{position:absolute;background:var(--surface);border:6px solid var(--ink);padding:44px 46px}
+.prize h3{font:800 50px/1.1 var(--sans);font-stretch:110%;margin:22px 0 28px}
+.prize code{display:block;font:400 26px/1.6 var(--mono);color:var(--muted)}
+.vo{position:absolute;left:120px;bottom:94px;display:flex;align-items:center;gap:28px;max-width:1680px}
+.vo .host{flex:none;background:var(--red);color:var(--redInk);font:800 24px/1 var(--mono);letter-spacing:.16em;padding:10px 14px;text-transform:uppercase}
+.vo q{font:italic 600 38px/1.2 var(--sans);quotes:"\201C" "\201D"}
+</style></head>
+<body>
+<div id="stage"></div>
+<script>
+/* ============ 1. CONTENT: edit these ============ */
+const THEME = new URLSearchParams(location.search).get("theme") || "dark";   // "dark" | "light"
+const BRAND = {};   // paste brand.json here; see references/style.md#brand
+
+// Gameshow has its own quiz sample. Beat types: title, qnum, question, countdown, reveal, score.
+// Wrap a word in *stars* to set it in the buzzer red. Any beat can take a `vo` host line.
+// Options are A–D in order; `answer` is the correct letter, `pick` is the one the contestant locks in.
+const BEATS = {
+  name: "homelab-nut",
+  url: "docs.torcato.dev/homelab-nut",
+  beats: [
+    { type: "title", start: 0, end: 5, kicker: "Open-source tool · Quiz night", lead: "How well do you know",
+      chip: "4 questions · 40 seconds", hint: "Press any key to play" },
+    { type: "qnum", start: 5, end: 9, n: 3, of: 4, kicker: "homelab-nut · The quiz", topic: "Power & shutdown", points: "+1,000",
+      vo: "Easy one. Unless you’ve ever lost a NAS to a brownout." },
+    { type: "question", start: 9, end: 15, n: 3, kicker: "Power & shutdown · 1,000 pts", clock: "0:10",
+      text: "The power cuts out. Which box shuts down *last*?",
+      options: ["the desktop", "the NAS", "the gateway", "the toaster"] },
+    { type: "countdown", start: 15, end: 20, n: 3, kicker: "Lock it in", from: 5, title: "Final answer*?*", pick: "C", pickAt: 1.5,
+      options: ["the desktop", "the NAS", "the gateway", "the toaster"],
+      vo: "Tick. Tock. The toaster is not a trick option. Or is it." },
+    { type: "reveal", start: 20, end: 26, n: 3, kicker: "The answer", text: "Which box shuts down last?", answer: "C", stamp: "Correct",
+      options: ["the desktop", "the NAS", "the gateway", "the toaster"],
+      vo: "The UPS server waits for everyone else to leave. Very polite." },
+    { type: "score", start: 26, end: 32, kicker: "Final score", right: "4 of 4 correct", score: 4000, title: "You know",
+      prize: "Star it on GitHub", cmds: ["gh repo star rtorcato/homelab-nut", "docs.torcato.dev/homelab-nut"],
+      vo: "Thanks for playing. Your homelab thanks you too." } ] };
+
+/* ============ 2. BRAND: brand.json overrides the board tokens ============ */
+const STYLE = "gameshow";
+function applyBrand(b, theme) {
+  const s = document.body.style, c = b.colors || {}, f = b.fonts || {};
+  if (c.accent) s.setProperty("--yel", c.accent);                   // the tile and correct fill; check --yelInk still passes AA
+  if (c[theme]) s.setProperty("--stage", c[theme]);
+  if (f.heading) s.setProperty("--disp", `"${f.heading}",sans-serif`);
+  if (f.body) s.setProperty("--sans", `"${f.body}",sans-serif`);
+  if (f.mono) s.setProperty("--mono", `"${f.mono}",monospace`);
+  const tok = ((b.styles || {})[STYLE] || {})[theme] || {};
+  for (const k in tok) s.setProperty(k.startsWith("--") ? k : "--" + k, tok[k]);
+  if (b.name) BEATS.name = b.name;
+  if (b.url) BEATS.url = b.url;
+}
+document.body.className = STYLE + " " + THEME;
+applyBrand(BRAND, THEME);
+
+/* ============ 3. BUILD ============ */
+const esc = s => String(s).replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+const em = s => esc(s).replace(/\*(.+?)\*/g, '<span class="red">$1</span>');   // *word* → buzzer red
+const L = "ABCD";
+const vo = b => b.vo ? `<div class="vo" data-in=".3"><span class="host">Host</span><q>${esc(b.vo)}</q></div>` : "";
+const qtag = (b, extra = "") => `<div class="abs tag" style="left:120px;top:96px"><span class="qchip">Q${esc(b.n)}</span>${esc(b.kicker)}</div>${extra}`;
+const opts = (b, cls, style) => `<div class="abs opts ${cls || ""}" style="${style}">${b.options.map((o, j) =>
+  `<div class="opt" data-opt="${L[j]}"><span class="key">${L[j]}</span>${esc(o)}</div>`).join("")}</div>`;
+// title bulbs: dots every 44px round the frame; every third one is dark and the gap chases
+function bulbs(x, y, w, h, step = 44) {
+  const pts = [], nx = Math.round(w / step), ny = Math.round(h / step), sx = w / nx, sy = h / ny;
+  for (let i = 0; i < nx; i++) pts.push([x + i * sx, y]);
+  for (let i = 0; i < ny; i++) pts.push([x + w, y + i * sy]);
+  for (let i = nx; i > 0; i--) pts.push([x + i * sx, y + h]);
+  for (let i = ny; i > 0; i--) pts.push([x, y + i * sy]);
+  return pts.map(([px, py], i) => `<i class="bulb" data-b="${i}" style="left:${(px - 11).toFixed(1)}px;top:${(py - 11).toFixed(1)}px"></i>`).join("");
+}
+const B = {
+  title: (b) => `<div class="abs tag" style="left:120px;top:100px">${esc(b.kicker)}</div>
+    <div class="abs tag" style="right:120px;top:100px">${esc(BEATS.url)}</div>
+    ${bulbs(122, 344, 1676, 362)}
+    <div class="abs" style="left:180px;right:180px;top:410px;text-align:center" data-drop=".2">
+      <div class="d" style="font-size:56px;color:var(--muted)">${esc(b.lead)}</div>
+      <div class="d" data-fit="1560,160" style="font-size:132px;margin-top:22px;white-space:nowrap">${esc(BEATS.name)}<span class="red">?</span></div></div>
+    <div class="abs tag" data-in=".9" style="left:0;right:0;top:902px;text-align:center;color:var(--ink)"><span class="chip">${esc(b.chip)}</span>&nbsp;&nbsp;&nbsp;${esc(b.hint)}</div>`,
+  qnum: (b) => `<div class="abs tag" style="left:120px;top:100px">${esc(b.kicker)}</div>
+    <div class="abs tag" style="right:120px;top:100px">${esc(b.topic)}</div>
+    <div class="abs d" style="left:120px;top:250px;font-size:150px">Question</div>
+    <div class="abs d" style="left:122px;top:425px;font-size:72px;color:var(--muted)">${esc(b.n)} of ${esc(b.of)}</div>
+    <div class="tile" data-spin="0" style="left:1280px;top:200px;width:420px;height:500px"><span class="d" style="font-size:400px;line-height:1">${esc(b.n)}</span></div>
+    <div class="sticker" data-slap=".75" style="left:1480px;top:630px;font-size:64px">${esc(b.points)}</div>${vo(b)}`,
+  question: (b) => qtag(b, `<div class="abs" style="right:120px;top:100px;font:800 48px/1 var(--mono);color:var(--red)">${esc(b.clock)}</div>`) + `
+    <div class="abs d" data-fit="1680,300" style="left:120px;top:205px;width:1680px;font-size:96px">${em(b.text)}</div>
+    ${opts(b, "pop", "left:120px;top:560px;width:1680px")}${vo(b)}`,
+  countdown: (b) => qtag(b) + `
+    <div class="ring" style="left:100px;top:210px">${Array.from({ length: 10 }, (_, j) => `<i style="transform:rotate(${j * 36}deg)"></i>`).join("")}<b></b></div>
+    <div class="abs d" style="left:820px;top:240px;font-size:120px">${em(b.title).replace(" ", "<br>")}</div>
+    ${opts(b, "sm", "left:820px;top:540px;width:980px;gap:30px 28px")}${vo(b)}`,
+  reveal: (b) => qtag(b) + `
+    <div class="abs d" data-fit="1680,140" style="left:120px;top:195px;font-size:80px;color:var(--muted);white-space:nowrap">${em(b.text)}</div>
+    ${opts(b, "", "left:120px;top:360px;width:1680px")}
+    <div class="stamp" style="visibility:hidden">${esc(b.stamp)}</div>${vo(b)}`,
+  score: (b) => { const digits = String(b.score).padStart(4, "0").split("");
+    const flaps = digits.map((d, j) => (j && (digits.length - j) % 3 === 0 ? `<span class="comma">,</span>` : "") + `<span class="flap" data-final="${d}" data-k="${j}">${d}</span>`).join("");
+    return `<div class="abs tag" style="left:120px;top:100px">${esc(b.kicker)}</div>
+    <div class="abs tag" style="right:120px;top:100px">${esc(b.right)}</div>
+    <div class="abs" style="left:120px;top:190px;white-space:nowrap">${flaps}</div>
+    <div class="prize" data-in=".9" style="left:1040px;top:190px;width:760px"><div class="tag">Your prize</div><h3>${esc(b.prize)}</h3>${(b.cmds || []).map(c => `<code>${esc(c)}</code>`).join("")}</div>
+    <div class="abs d" data-in="1.1" style="left:120px;top:478px;font-size:96px;white-space:nowrap">${esc(b.title)}<br><span class="chip" style="padding:.04em .14em 0">${esc(BEATS.name)}</span>.</div>${vo(b)}`; },
+};
+const stage = document.getElementById("stage");
+const S = BEATS.beats.map((b) => {
+  const el = document.createElement("section"); el.className = "beat"; el.innerHTML = B[b.type](b); stage.appendChild(el);
+  const q = sel => [...el.querySelectorAll(sel)];
+  return { b, el, fits: q("[data-fit]"), fitted: false,
+    ins: q("[data-in]").map(e => ({ e, d: +e.dataset.in })), drops: q("[data-drop]"), bulbs: q(".bulb"), spins: q("[data-spin]"),
+    slaps: q("[data-slap]"), opts: q(".opt"), ticks: q(".ring i"), num: el.querySelector(".ring b"), stamp: el.querySelector(".stamp"), flaps: q(".flap") };
+});
+["900 100px Archivo", "800 50px Archivo", "italic 600 38px Archivo", "800 30px 'JetBrains Mono'", "400 26px 'JetBrains Mono'"].forEach(f => document.fonts.load(f));
+
+/* ============ 4. HELPERS ============ */
+const F = 1 / 30;   // one frame at 30fps
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, s, d) => clamp((t - s) / d);
+const eo = x => 1 - Math.pow(1 - x, 3);
+const back = (x, s = 2.2) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);   // overshoots ~1.1 then settles
+const show = (e, on) => e.style.visibility = on ? "visible" : "hidden";
+function fit(el) {   // shrink until the block fits its box; runs once per beat, after fonts load
+  const [mw, mh] = el.dataset.fit.split(",").map(Number); let fs = parseFloat(getComputedStyle(el).fontSize);
+  while (fs > 30 && (el.scrollWidth > mw || el.offsetHeight > mh)) { fs -= 4; el.style.fontSize = fs + "px"; }
+}
+function popOpts(s, u, t0) {   // A→D, 0.12s apart, 0.25s each with overshoot
+  s.opts.forEach((o, j) => { const p = P(u, t0 + j * .12, .25); show(o, p > 0); o.style.transform = p > 0 && p < 1 ? `scale(${back(p).toFixed(3)})` : "none"; });
+}
+function placeStamp(s) {   // pin the stamp across the bottom-right corner of the correct option
+  const win = s.el.querySelector(".opt.win"); if (!win || s.stampPlaced) return;
+  const r = win.getBoundingClientRect(); s.stamp.style.left = (r.right - 400) + "px"; s.stamp.style.top = (r.bottom - 22) + "px"; s.stampPlaced = true;
+}
+
+/* ============ 5. RENDER: pure function of t ============ */
+window.DURATION = BEATS.beats[BEATS.beats.length - 1].end;
+window.render = function (t) {
+  S.forEach((s, i) => {
+    const { b, el } = s, last = i === S.length - 1, on = t >= b.start && (t < b.end || last);
+    el.style.display = on ? "block" : "none"; if (!on) return;       // hard cuts
+    if (!s.fitted && document.fonts.status === "loaded") { s.fits.forEach(fit); s.fitted = true; }
+    const u = t - b.start, fr = Math.floor(u / F + 1e-6);
+    for (const it of s.ins) show(it.e, u >= it.d);
+    // title: the dark gap in the bulbs steps one position every 2 frames; the name drops in
+    if (s.bulbs.length) { const off = Math.floor(fr / 2) % 3; s.bulbs.forEach((e, j) => e.classList.toggle("off", (j + off) % 3 === 0)); }
+    for (const e of s.drops) { const p = eo(P(u, +e.dataset.drop, .35)); show(e, p > 0); e.style.transform = `translateY(${((1 - p) * -160).toFixed(1)}px)`; }
+    // question number: 1.25 turns, landing at -6deg; the sticker slaps on at 9deg
+    for (const e of s.spins) { const p = eo(P(u, +e.dataset.spin, .6)); show(e, p > 0);
+      e.style.transform = `rotate(${(-6 - 450 * (1 - p)).toFixed(2)}deg) scale(${(.3 + .7 * p).toFixed(3)})`; }
+    for (const e of s.slaps) { const k = Math.floor((u - +e.dataset.slap) / F + 1e-6); show(e, k >= 0);
+      e.style.transform = `rotate(9deg) scale(${k >= 0 && k < 3 ? (1.5 - k * .17).toFixed(2) : 1})`; }
+    if (b.type === "question") popOpts(s, u, .6);
+    if (b.type === "countdown") {
+      const left = Math.max(0, (b.from || 10) - Math.floor(u));                  // hard cut each second
+      s.ticks.forEach((e, j) => e.classList.toggle("on", j < left));
+      s.num.textContent = left;
+      s.opts.forEach(o => o.classList.toggle("pick", o.dataset.opt === b.pick && u >= (b.pickAt || 0)));
+    }
+    if (b.type === "reveal") {
+      const go = u >= .4;                                                        // 0.4s freeze first
+      s.opts.forEach(o => { const win = o.dataset.opt === b.answer; o.classList.toggle("win", go && win); o.classList.toggle("out", go && !win); });
+      if (go) placeStamp(s);
+      const k = Math.floor((u - .5) / F + 1e-6);                                  // stamp: 1.3 → 1 over 4 frames, then a 2-frame shake
+      show(s.stamp, k >= 0);
+      const sc = k < 0 ? 1.3 : k < 4 ? 1.3 - .075 * k : 1, sh = k === 4 ? 8 : k === 5 ? -6 : 0;
+      s.stamp.style.transform = `translate(${sh}px,${-sh / 2}px) rotate(6deg) scale(${sc.toFixed(3)})`;
+    }
+    if (b.type === "score") s.flaps.forEach(e => {                               // split-flap: roll a digit every 2 frames, settle left to right
+      const stop = .4 + +e.dataset.k * .25, fin = +e.dataset.final;
+      e.textContent = u >= stop ? fin : (fin + 1 + Math.floor(fr / 2)) % 10;
+    });
+  });
+};
+window.render(0);
+</script>
+</body></html>
