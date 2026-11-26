@@ -44,6 +44,10 @@ Then you record yourself reading `SCRIPT.md`, swap your take in for the placehol
 - **video-basic:** you edit the HTML and re-render; the MP4 can't be opened back up. See [Editing a video-basic video](docs/EDITING-BASIC.md).
 - **video-pro:** you edit the timeline in DaVinci Resolve. See [Editing a video-pro video in Resolve](docs/EDITING-PRO.md).
 
+## Copy a style you like
+
+Want your video to look like a channel you admire? [Copy a style from a video you like](docs/COPY-A-STYLE.md) turns your notes into a `brand.json`, a style brief and a prompt, and says what you can and can't borrow.
+
 ## Your brand
 
 The skills use your project's own brand when they find one (`brand/`, `DESIGN.md`, logo, mascot). To set it explicitly, add a `brand.json` (colours, fonts, logo, mascot); see [the style guide](skills/video-basic/references/style.md#brand).
