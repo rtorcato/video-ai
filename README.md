@@ -1,4 +1,15 @@
+<!-- brand-kit:banner:start -->
+<picture>
+  <source media="(max-width: 640px) and (prefers-color-scheme: light)" srcset="./brand/banner-mobile-light.png">
+  <source media="(max-width: 640px)" srcset="./brand/banner-mobile.png">
+  <source media="(prefers-color-scheme: light)" srcset="./brand/banner-light.png">
+  <img src="./brand/banner.png" alt="Explainer videos from HTML, rendered by your agent." width="1600">
+</picture>
+<!-- brand-kit:banner:end -->
+
 # video-ai
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" height="40">](https://buymeacoffee.com/rtorcato)
 
 Agent skills for making explainer and showcase videos for software projects: talking head + animated UI cards, the style of popular AI-tools YouTube channels. Built for Claude, works with any agent that reads `SKILL.md` skills.
 
