@@ -22,6 +22,14 @@ If the user keeps a `brand.json` (in the project root, or the folder they point 
 
 Every field is optional. `backgrounds` are gradient pairs, one per section.
 
+The [style templates](#styles) read the same file. Paste it into the page's `BRAND` constant, since a `file://` page can't fetch JSON. They use `colors.accent`, `colors.dark` or `colors.light` (the page background for that theme) and `fonts`. They ignore `backgrounds`, because none of them use gradients. To set an exact board token, add a `styles` block keyed by style and theme:
+
+```json
+{ "styles": { "ledger": { "dark": { "--acc": "#8AB4FF" }, "light": { "--acc": "#1E40AF" } } } }
+```
+
+Re-check contrast after any colour override. Every board pair is WCAG AA in both themes, and your brand colour may not be.
+
 ## Canvas and fonts
 
 - `html,body{width:1920px;height:1080px;overflow:hidden}`; everything absolutely positioned.
@@ -70,6 +78,27 @@ function pill(el,t,s){const x=eo(P(t,s,.4)),sc=spr(P(t,s,.6));
 - Stagger lists by 0.12–0.25s per item. Springs take 0.7–0.9s.
 - Typing effect: slice the command by `(t-start)*24` characters and draw a block cursor that blinks with `Math.floor(t*2.5)%2`. Only the latest line's cursor blinks.
 - Expose `window.render` and call `render(0)` on load.
+
+## Styles
+
+Everything above describes the default look: gradients, white cards and caption pills (`templates/index.html`). There are four other looks, each a complete page in `templates/<style>/index.html`:
+
+| Style | Use it for | Look | Motion |
+|---|---|---|---|
+| `ledger` | tutorials, walkthroughs, explainers | Flat editorial. Inter Tight 800 headings, IBM Plex Mono labels, numbered sections on a faint 160px column grid, one blue accent | Calm: 40px slides along the grid, ease-out. No blur, no spring |
+| `prompt` | CLI tools, release notes, changelogs | Terminal-first. All JetBrains Mono: tabs, TUI boxes, a mint accent, an amber highlight. Captions are a full-width status bar | Typing at 24 chars/s with a stepped cursor. Rows appear on their frame. Beats change by switching tabs (hard cuts) |
+| `slab` | 15–45s social clips, teasers | Bold kinetic type. Uppercase Anton at 170–330px, lime and violet blocks flush behind words, cards with hard offset shadows | Words slam in over 4 frames (135% to 100%, stepped). Hard cuts timed to the VO stress |
+| `walkthrough` | step-by-step how-tos, settings and setup guides | A generic drawn phone, numbered step discs, progress dots and one caption per step. Navy or cool grey with a teal accent. Manrope plus IBM Plex Mono | The screen slides in 0.3s, the row highlight draws, the tap ring pulses once and the toggle flips. Captions crossfade in 0.2s |
+
+How the style templates work:
+
+- Content lives in one `BEATS` block at the top of the page, so the agent edits data, not markup. Ledger, Prompt and Slab share one sample (the homelab-nut beats: `title`, `card`, `terminal`, `caption`, `outro`), so you can compare them like for like. Walkthrough has its own how-to sample: it adds `step` beats and `SCREENS` for the phone, and its `terminal` slot is a settings path.
+- Wrap a word in `*stars*` to mark the emphasis word. Slab sets it on a colour block, the Walkthrough path highlights it, and the others show it plain.
+- Every style has a dark and a light theme. Pick one with `?theme=light` while previewing, or set `THEME` in the page before rendering (`render.py` loads the page without a query string).
+- The board tokens are WCAG AA for text in both themes. Prompt's light accent (4.7:1) is only for large or bold text. Walkthrough's light tap colour is `#B45309` because brighter ambers fall below 3:1 on white. Keep these values unless you re-check contrast.
+- No gradients in any of them. Walkthrough's phone is an original drawn handset: no real device frame, no OS screenshots and no platform icons.
+- Each one is a normal page with a deterministic `render(t)` and `window.DURATION`, so `render.py` films it the same way. Add beats by appending to `BEATS.beats` with new `start`/`end` times. Each beat type builds itself.
+- They load Google Fonts. Offline, install the fonts locally (the families are named in each page's `<link>`) or set `fonts` in `brand.json`.
 
 ## Mascots and logos
 

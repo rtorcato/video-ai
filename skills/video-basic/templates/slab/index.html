@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--
+  Slab: bold kinetic type. For 15–45s social clips and teasers.
+  Uppercase Anton at 170–330px, lime and violet blocks set flush behind words, cards with hard offset shadows.
+  Motion: words slam in over 4 frames; beats are hard cuts, timed to land on the VO stress.
+
+  Edit the BEATS block (content) and BRAND block (paste your brand.json). Theme: ?theme=light, or change THEME.
+  Render: python3 render.py video index.html out.mp4   (see references/style.md#styles)
+-->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@600;800&family=JetBrains+Mono:wght@400;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:var(--bg);color:var(--ink);position:relative;-webkit-font-smoothing:antialiased;
+  --disp:Anton,"Avenir Next Condensed",sans-serif;--sans:Inter,sans-serif;--mono:"JetBrains Mono",monospace}
+body.dark{--bg:#0B0B0F;--ink:#FFFFFF;--muted:#B4B4C0;--blk:#D4FF3A;--blkInk:#0B0B0F;--blk2:#8B6CFF;--blk2Ink:#0B0B0F;--card:#16161D;--camBg:#1B1B22;--camFg:#2E2E38;--camLbl:#D0D0DA}
+body.light{--bg:#FFFFFF;--ink:#0B0B0F;--muted:#4A4A57;--blk:#D4FF3A;--blkInk:#0B0B0F;--blk2:#3B1FD1;--blk2Ink:#FFFFFF;--card:#FFFFFF;--camBg:#E4E4EA;--camFg:#C9C9D3;--camLbl:#1B1B22}
+.beat{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+.d{font:400 300px/.86 var(--disp);text-transform:uppercase;letter-spacing:-.005em}
+.d>span{display:inline-block;transform-origin:left bottom}
+.blk{display:inline-block;background:var(--blk);color:var(--blkInk);padding:.04em .12em 0}
+.blk2{display:inline-block;background:var(--blk2);color:var(--blk2Ink);padding:.04em .12em 0}
+.onbg{display:inline-block;background:var(--bg);color:var(--ink);padding:.04em .12em 0}
+.tag{font:800 34px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--card);border:8px solid var(--ink);box-shadow:22px 22px 0 var(--blk)}
+.srow{display:grid;grid-template-columns:150px 1fr auto;align-items:center;padding:30px 50px;border-top:4px solid var(--ink)}
+.srow:first-child{border-top:0}
+.srow .n{font:400 120px/.9 var(--disp)}
+.srow .h{font:800 54px/1 var(--sans);letter-spacing:-.02em}
+.srow .h small{display:block;font:600 30px/1.3 var(--sans);color:var(--muted);letter-spacing:0;margin-top:8px}
+.srow .last{font:800 26px/1 var(--mono);letter-spacing:.1em;background:var(--blk2);color:var(--blk2Ink);padding:14px 18px;text-transform:uppercase}
+.sterm{background:#0B0B0F;color:#F4F4F6;border:8px solid var(--ink);box-shadow:22px 22px 0 var(--blk2);font:400 54px/1.7 var(--mono);padding:64px 72px;white-space:pre}
+body.dark .sterm{border-color:#FFFFFF}
+.sterm .ok{color:#D4FF3A}.sterm .m{color:#A8A8B6}
+.sterm>div{transform-origin:left center}
+.cw{font:400 230px/.86 var(--disp);text-transform:uppercase}
+.cw>div{transform-origin:left bottom}
+.cam{position:absolute;background:var(--camBg);overflow:hidden}
+.cam .head{position:absolute;left:50%;top:26%;width:220px;height:220px;border-radius:50%;background:var(--camFg);transform:translateX(-50%)}
+.cam .body{position:absolute;left:50%;top:52%;width:560px;height:420px;border-radius:200px 200px 0 0;background:var(--camFg);transform:translateX(-50%)}
+.cam .lbl{position:absolute;left:28px;top:24px;font:600 22px/1 var(--mono);color:var(--camLbl);letter-spacing:.04em}
+.cam .lbl b{color:#ff4d4d}
+</style></head>
+<body>
+<div id="stage"></div>
+<script>
+/* ============ 1. CONTENT: edit these ============ */
+const THEME = new URLSearchParams(location.search).get("theme") || "dark";   // "dark" | "light"
+const BRAND = {};   // paste brand.json here; see references/style.md#brand
+
+// The shared sample beats: Ledger, Prompt and Slab all render this same content.
+// Wrap a word in *stars* to mark the emphasis word (Slab blocks it; Ledger and Prompt show it plain).
+const BEATS = {
+  name: "homelab-nut",
+  tagline: "Graceful UPS shutdown for every machine in your homelab.",
+  url: "docs.torcato.dev/homelab-nut",
+  meta: "Network UPS Tools · CLI",
+  beats: [
+    { type: "title", start: 0, end: 5, kicker: "Open-source tool", cmd: "homelab-nut", flags: ["init", "plan", "apply"] },
+    { type: "card", start: 5, end: 12, kicker: "Step one", title: "Describe your *fleet*.",
+      sub: "init asks which box has the UPS and what must power off cleanly.", cmd: "nut init",
+      cardTitle: "Fleet", cardMeta: "3 hosts", cols: ["Host", "Role", "Shutdown"],
+      rows: [
+        { name: "desktop", role: "client", detail: "at 30% battery", tag: "first" },
+        { name: "nas", role: "client", detail: "at 25% battery", tag: "second" },
+        { name: "gateway", role: "UPS server", detail: "last, after clients", tag: "last", accent: true } ] },
+    { type: "terminal", start: 12, end: 20, kicker: "Step two", title: "Plan, then *apply*.",
+      label: "zsh — homelab-nut", meta: "3 hosts",
+      lines: [
+        { cmd: "nut plan" },
+        { out: "~ desktop upsmon.conf, shutdown@30%" },
+        { out: "~ nas upsmon.conf, shutdown@25%" },
+        { out: "+ gateway upsd, ups.conf, watch daemon" },
+        { hi: "3 hosts, 7 changes." },
+        { cmd: "nut apply" },
+        { ok: "desktop configured" },
+        { ok: "nas configured" },
+        { ok: "gateway configured" } ] },
+    { type: "caption", start: 20, end: 24, kicker: "The pitch", text: "Two *commands*.", hint: "init · apply" },
+    { type: "outro", start: 24, end: 30, kicker: "Get it", title: "Star it on *GitHub*.",
+      cmds: ["gh repo star rtorcato/homelab-nut", "open docs.torcato.dev/homelab-nut"],
+      links: [["Repo", "rtorcato/homelab-nut"], ["Docs", "docs.torcato.dev"], ["License", "MIT · open source"]] } ] };
+
+/* ============ 2. BRAND: brand.json overrides the board tokens ============ */
+const STYLE = "slab";
+function applyBrand(b, theme) {
+  const s = document.body.style, c = b.colors || {}, f = b.fonts || {};
+  if (c.accent) s.setProperty("--blk", c.accent);                  // the lime block; check its ink still passes AA
+  if (c[theme]) s.setProperty("--bg", c[theme]);
+  if (f.heading) s.setProperty("--disp", `"${f.heading}",sans-serif`);
+  if (f.body) s.setProperty("--sans", `"${f.body}",sans-serif`);
+  if (f.mono) s.setProperty("--mono", `"${f.mono}",monospace`);
+  const tok = ((b.styles || {})[STYLE] || {})[theme] || {};
+  for (const k in tok) s.setProperty(k.startsWith("--") ? k : "--" + k, tok[k]);
+  if (b.name) BEATS.name = b.name;
+  if (b.url) BEATS.url = b.url;
+}
+document.body.className = STYLE + " " + THEME;
+applyBrand(BRAND, THEME);
+
+/* ============ 3. BUILD ============ */
+const esc = s => String(s).replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+// split a line into slam-in words; *word* gets the block colour `blk`
+const words = (s, blk, d0, step = .3) => {
+  const out = []; let d = d0;
+  String(s).replace(/\*(.+?)\*(\S*)|(\S+)/g, (_, em, tail, w) => {     // trailing punctuation stays inside the block
+    out.push(`<span data-in="${d.toFixed(2)}"${em ? ` class="${blk}"` : ""}>${esc(em ? em + tail : w)}</span>`); d += step; return "";
+  });
+  return out.join(" ");
+};
+// data-in = slam time (s); data-fit = "maxWidth,maxHeight": shrink the type until it fits
+const B = {
+  title: (b) => { const n = BEATS.name, k = n.lastIndexOf("-"),
+      big = k > 0 ? `<span data-in=".15">${esc(n.slice(0, k))}</span><br><span data-in=".5" class="blk">${esc(n.slice(k))}</span>` : `<span data-in=".15" class="blk">${esc(n)}</span>`;
+    return `<div class="abs tag" data-in=".05" style="left:120px;top:110px;color:var(--muted)">${esc(b.kicker)}</div>
+    <div class="abs tag" data-in=".05" style="right:120px;top:110px;color:var(--muted)">${esc(BEATS.url)}</div>
+    <div class="abs d" data-fit="1700,700" style="left:110px;top:220px;font-size:330px">${big}</div>
+    <div class="abs tag" data-in=".9" style="left:120px;bottom:110px">${esc(BEATS.tagline)}</div>`; },
+  card: (b) => `<div class="abs d" data-fit="820,820" style="left:110px;top:150px;width:820px;font-size:170px">${words(b.title, "blk2", .1)}</div>
+    <div class="abs card" data-in=".9" style="left:960px;top:170px;width:820px">
+      ${b.rows.map((r, j) => `<div class="srow" data-in="${(1.3 + j * .3).toFixed(2)}"><span class="n">${j + 1}</span><span class="h">${esc(r.name)}<small>${esc(r.role)} · ${esc(r.detail)}</small></span>${r.accent ? `<span class="last">${esc(r.tag)}</span>` : "<span></span>"}</div>`).join("")}
+    </div>`,
+  terminal: (b) => {
+    // Slab condenses the log: each command (plus its hi summary), then the ✓ results on one row
+    const rows = []; let oks = [];
+    for (const l of b.lines) {
+      if (l.cmd) rows.push(`<span class="m">$</span> ${esc(l.cmd)}`);
+      else if (l.hi) rows[rows.length - 1] += ` <span class="m">→ ${esc(l.hi.replace(/\.$/, ""))}</span>`;
+      else if (l.ok) oks.push(`<span class="ok">✓</span> ${esc(l.ok.split(" ")[0])}`);
+    }
+    if (oks.length) rows.push(oks.join("  "));
+    return `<div class="abs d" data-fit="1700,280" style="left:110px;top:110px;font-size:170px;white-space:nowrap">${words(b.title, "blk", .1)}</div>
+    <div class="abs sterm" data-in=".8" style="left:110px;top:400px;width:1680px">${rows.map((r, j) => `<div data-in="${(1.2 + j * .5).toFixed(2)}">${r}</div>`).join("")}</div>`; },
+  caption: (b) => { const ws = []; let d = .15;
+    String(b.text).replace(/\*(.+?)\*(\S*)|(\S+)/g, (_, em, tail, w) => { ws.push(`<div data-in="${d.toFixed(2)}"><span class="${em ? "blk" : "onbg"}">${esc(em ? em + tail : w)}</span></div>`); d += .35; return ""; });
+    return `<div class="cam" style="inset:0"><div class="head"></div><div class="body"></div><div class="lbl"><b>●</b> TALKING HEAD</div></div>
+    <div class="abs cw" data-fit="1700,860" style="left:110px;bottom:100px">${ws.join("")}</div>`; },
+  outro: (b) => `<div class="abs d" data-fit="1700,700" style="left:110px;top:150px;width:1700px;font-size:300px">${words(b.title, "blk2", .1)}</div>
+    <div class="abs tag" data-in="1.2" style="left:120px;bottom:120px;font-size:44px">${esc(((b.links || [])[0] || [, BEATS.name])[1])}</div>
+    <div class="abs tag" data-in="1.2" style="right:120px;bottom:120px;color:var(--muted)">${esc(BEATS.url)}</div>`,
+};
+const stage = document.getElementById("stage");
+const S = BEATS.beats.map((b, i) => {
+  const el = document.createElement("section"); el.className = "beat"; el.innerHTML = B[b.type](b, i); stage.appendChild(el);
+  const items = [...el.querySelectorAll("[data-in]")].map(e => ({ e, d: +e.dataset.in }));
+  return { b, el, items, fits: [...el.querySelectorAll("[data-fit]")], fitted: false };
+});
+["400 200px Anton", "800 50px Inter", "600 30px Inter", "400 50px 'JetBrains Mono'", "800 30px 'JetBrains Mono'"].forEach(f => document.fonts.load(f));
+
+/* ============ 4. HELPERS ============ */
+const F = 1 / 30;   // one frame at 30fps
+// slam: 4 frames from 135% to 100%, in hard frame steps (no easing, no blur)
+const slam = (u, d) => { if (u < d) return null; const k = Math.min(4, Math.floor((u - d) / F + 1e-6)); return 1 + .35 * (1 - k / 4); };
+function fit(el) {   // shrink until the block fits its box; runs once per beat, after fonts load
+  const [mw, mh] = el.dataset.fit.split(",").map(Number); let fs = parseFloat(getComputedStyle(el).fontSize);
+  while (fs > 40 && (el.scrollWidth > mw || el.offsetHeight > mh)) { fs -= 6; el.style.fontSize = fs + "px"; }
+}
+
+/* ============ 5. RENDER: pure function of t ============ */
+window.DURATION = BEATS.beats[BEATS.beats.length - 1].end;
+window.render = function (t) {
+  S.forEach((s, i) => {
+    const { b, el, items } = s, last = i === S.length - 1, on = t >= b.start && (t < b.end || last);
+    el.style.display = on ? "block" : "none"; if (!on) return;       // hard cuts
+    if (!s.fitted && document.fonts.status === "loaded") { s.fits.forEach(fit); s.fitted = true; }
+    const u = t - b.start;
+    for (const it of items) {
+      const k = slam(u, it.d);
+      it.e.style.visibility = k === null ? "hidden" : "visible";
+      it.e.style.transform = k && k !== 1 ? `scale(${k})` : "none";
+    }
+  });
+};
+window.render(0);
+</script>
+</body></html>

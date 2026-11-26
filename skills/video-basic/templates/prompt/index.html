@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<!--
+  Prompt: terminal-first. For CLI tools, release notes and changelogs.
+  Everything in JetBrains Mono: tabs, TUI boxes, one mint accent; captions are a full-width status bar.
+  Motion: typing with a stepped cursor; beats change by switching tabs (hard cuts, no easing).
+
+  Edit the BEATS block (content) and BRAND block (paste your brand.json). Theme: ?theme=light, or change THEME.
+  Render: python3 render.py video index.html out.mp4   (see references/style.md#styles)
+-->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{background:var(--bg);color:var(--ink);position:relative;-webkit-font-smoothing:antialiased;
+  --mono:"JetBrains Mono",monospace;font-family:var(--mono)}
+body.dark{--bg:#0A0D0B;--panel:#111612;--line:#2E3A31;--ink:#DCE6DE;--muted:#8B9B8F;--acc:#4ADE9B;--accInk:#06120B;--hi:#FFC547;--hiInk:#140F02;--camBg:#151B17;--camFg:#26302A;--camLbl:#AFC0B3}
+body.light{--bg:#EEF1EC;--panel:#FFFFFF;--line:#B9C4BA;--ink:#0C1410;--muted:#4A5850;--acc:#0B7A47;--accInk:#FFFFFF;--hi:#FFC547;--hiInk:#140F02;--camBg:#DCE2DA;--camFg:#C2CBC1;--camLbl:#1B2620}
+.beat{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+.tabs{position:absolute;left:0;right:0;top:0;height:64px;border-bottom:2px solid var(--line);display:flex;align-items:center;font:700 22px/1 var(--mono);color:var(--muted)}
+.tabs span{padding:0 34px;height:100%;display:flex;align-items:center;border-right:2px solid var(--line)}
+.tabs span.on{color:var(--ink);background:var(--panel);box-shadow:inset 0 -4px 0 var(--acc)}
+.big{font:800 150px/1 var(--mono);letter-spacing:-.03em;white-space:nowrap}
+.cur{display:inline-block;width:.55em;height:.95em;background:var(--acc);vertical-align:-.1em;margin-left:.08em}
+.cmt{color:var(--muted);font:400 44px/1.4 var(--mono);white-space:pre}
+.acc{color:var(--acc)} .hi{background:var(--hi);color:var(--hiInk);padding:0 .25em}
+.flag{display:inline-block;border:2px solid var(--line);padding:14px 22px;margin-right:18px;font:700 30px/1 var(--mono);color:var(--ink)}
+.box{position:absolute;border:3px solid var(--line);background:var(--panel)}
+.box .t{position:absolute;top:-22px;left:40px;background:var(--bg);padding:0 16px;font:700 30px/1.4 var(--mono);color:var(--acc)}
+.tr{display:grid;grid-template-columns:90px 330px 330px 1fr;font:400 38px/1 var(--mono);padding:28px 44px;align-items:center}
+.tr.h{color:var(--muted);font-size:26px;letter-spacing:.1em;border-bottom:2px dashed var(--line);text-transform:uppercase}
+.tr.sel{background:var(--acc);color:var(--accInk);font-weight:700}
+.out{font:400 38px/1.6 var(--mono)}
+.out>div{white-space:pre}
+.out .m{color:var(--muted)}
+.status{position:absolute;left:0;right:0;bottom:0;height:150px;background:var(--acc);color:var(--accInk);display:flex;align-items:center;padding:0 60px;font:800 78px/1 var(--mono);letter-spacing:-.02em;white-space:pre}
+.status small{font:700 28px/1 var(--mono);margin-left:auto;letter-spacing:.08em}
+.status .cur{background:var(--accInk)}
+.cam{position:absolute;background:var(--camBg);overflow:hidden}
+.cam .head{position:absolute;left:50%;top:26%;width:220px;height:220px;border-radius:50%;background:var(--camFg);transform:translateX(-50%)}
+.cam .body{position:absolute;left:50%;top:52%;width:560px;height:420px;border-radius:200px 200px 0 0;background:var(--camFg);transform:translateX(-50%)}
+.cam .lbl{position:absolute;left:28px;top:24px;font:600 22px/1 var(--mono);color:var(--camLbl);letter-spacing:.04em}
+.cam .lbl b{color:#ff4d4d}
+</style></head>
+<body>
+<div id="stage"></div>
+<script>
+/* ============ 1. CONTENT: edit these ============ */
+const THEME = new URLSearchParams(location.search).get("theme") || "dark";   // "dark" | "light"
+const BRAND = {};   // paste brand.json here; see references/style.md#brand
+
+// The shared sample beats: Ledger, Prompt and Slab all render this same content.
+// Wrap a word in *stars* to mark the emphasis word (Slab blocks it; Ledger and Prompt show it plain).
+const BEATS = {
+  name: "homelab-nut",
+  tagline: "Graceful UPS shutdown for every machine in your homelab.",
+  url: "docs.torcato.dev/homelab-nut",
+  meta: "Network UPS Tools · CLI",
+  beats: [
+    { type: "title", start: 0, end: 5, kicker: "Open-source tool", cmd: "homelab-nut", flags: ["init", "plan", "apply"] },
+    { type: "card", start: 5, end: 12, kicker: "Step one", title: "Describe your *fleet*.",
+      sub: "init asks which box has the UPS and what must power off cleanly.", cmd: "nut init",
+      cardTitle: "Fleet", cardMeta: "3 hosts", cols: ["Host", "Role", "Shutdown"],
+      rows: [
+        { name: "desktop", role: "client", detail: "at 30% battery", tag: "first" },
+        { name: "nas", role: "client", detail: "at 25% battery", tag: "second" },
+        { name: "gateway", role: "UPS server", detail: "last, after clients", tag: "last", accent: true } ] },
+    { type: "terminal", start: 12, end: 20, kicker: "Step two", title: "Plan, then *apply*.",
+      label: "zsh — homelab-nut", meta: "3 hosts",
+      lines: [
+        { cmd: "nut plan" },
+        { out: "~ desktop upsmon.conf, shutdown@30%" },
+        { out: "~ nas upsmon.conf, shutdown@25%" },
+        { out: "+ gateway upsd, ups.conf, watch daemon" },
+        { hi: "3 hosts, 7 changes." },
+        { cmd: "nut apply" },
+        { ok: "desktop configured" },
+        { ok: "nas configured" },
+        { ok: "gateway configured" } ] },
+    { type: "caption", start: 20, end: 24, kicker: "The pitch", text: "Two *commands*.", hint: "init · apply" },
+    { type: "outro", start: 24, end: 30, kicker: "Get it", title: "Star it on *GitHub*.",
+      cmds: ["gh repo star rtorcato/homelab-nut", "open docs.torcato.dev/homelab-nut"],
+      links: [["Repo", "rtorcato/homelab-nut"], ["Docs", "docs.torcato.dev"], ["License", "MIT · open source"]] } ] };
+
+/* ============ 2. BRAND: brand.json overrides the board tokens ============ */
+const STYLE = "prompt";
+function applyBrand(b, theme) {
+  const s = document.body.style, c = b.colors || {}, f = b.fonts || {};
+  if (c.accent) s.setProperty("--acc", c.accent);
+  if (c[theme]) s.setProperty("--bg", c[theme]);
+  if (f.mono) s.setProperty("--mono", `"${f.mono}",monospace`);          // Prompt is mono-only
+  const tok = ((b.styles || {})[STYLE] || {})[theme] || {};
+  for (const k in tok) s.setProperty(k.startsWith("--") ? k : "--" + k, tok[k]);
+  if (b.name) BEATS.name = b.name;
+  if (b.url) BEATS.url = b.url;
+}
+document.body.className = STYLE + " " + THEME;
+applyBrand(BRAND, THEME);
+
+/* ============ 3. BUILD ============ */
+const esc = s => String(s).replace(/[&<>"]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
+const plain = s => String(s).replace(/\*(.+?)\*/g, "$1");
+const low = s => plain(s).replace(/[.!]$/, "").toLowerCase();
+const tabs = (names) => `<div class="tabs">${names.map((n, j) => `<span${j ? "" : ' class="on"'}>${esc(n)}</span>`).join("")}</div>`;
+// data-in = delay (s). data-fx: type (24 chars/s) | show (appears on its frame) | sel (selection bar steps down rows)
+const typ = (d, text, cls = "") => `<span${cls ? ` class="${cls}"` : ""} data-in="${d}" data-fx="type" data-text="${esc(text)}"></span>`;
+const B = {
+  title: (b) => `${tabs(b.tabs || ["~/" + BEATS.name, "docs", "zsh"])}
+    <div class="abs big" style="left:140px;top:300px"><span class="acc">$</span> ${typ(.3, b.cmd || BEATS.name)}<span class="cur"></span></div>
+    <div class="abs cmt" data-in="1.4" data-fx="show" style="left:140px;top:500px"># ${esc(BEATS.tagline.toLowerCase())}</div>
+    <div class="abs" style="left:140px;top:680px">${(b.flags || []).map((f, j) => `<span class="flag" data-in="${1.9 + j * .2}" data-fx="show">${esc(f)}</span>`).join("")}</div>
+    <div class="abs cmt" data-in="2.6" data-fx="show" style="left:140px;bottom:90px;font-size:28px">${esc(BEATS.url)} · ${esc(BEATS.meta.toLowerCase())}</div>`,
+  card: (b) => `${tabs(b.tabs || [b.cmd || "~/" + BEATS.name, "README.md"])}
+    <div class="abs cmt" style="left:120px;top:140px;font-size:38px"><span class="acc">${typ(.15, low(b.kicker))}</span>${typ(.15 + b.kicker.length / 24, " — " + low(b.title))}</div>
+    <div class="box" data-in=".9" data-fx="show" style="left:120px;top:260px;width:1680px;height:600px">
+      <div class="t">${esc(b.cardTitle.toLowerCase())}</div><div style="height:30px"></div>
+      <div class="tr h"><span>#</span>${(b.cols || []).map(c => `<span>${esc(c)}</span>`).join("")}</div>
+      ${b.rows.map((r, j) => `<div class="tr" data-in="${1.1 + j * .15}" data-fx="show" data-sel="${r.accent ? 1 : 0}"><span>${j + 1}</span><span>${esc(r.name)}</span><span>${esc(r.role.toLowerCase())}</span><span>${esc(r.detail)}</span></div>`).join("")}
+      <div class="cmt" data-in="1.6" data-fx="show" style="position:absolute;left:44px;bottom:34px;font-size:28px">↑↓ move · enter edit · a add · q done</div>
+    </div>`,
+  terminal: (b) => {
+    let c = .3, rows = "";
+    const cmds = b.lines.filter(l => l.cmd).map(l => l.cmd);
+    for (const l of b.lines) {
+      const gap = rows && l.cmd || l.hi ? ' style="margin-top:24px"' : "";
+      if (l.cmd) { rows += `<div${gap}><span class="acc">$</span> ${typ(c, l.cmd)}<span class="cur"></span></div>`; c += l.cmd.length / 24 + .35; }
+      else { const h = l.ok ? `<span class="acc">✓</span> ${esc(l.ok)}` : l.hi ? `<span class="hi">${esc(l.hi)}</span>` : `<span class="m">${esc(l.out)}</span>`;
+        rows += `<div data-in="${c}" data-fx="show"${gap}>${h}<span class="cur"></span></div>`; c += l.hi ? .6 : .25; }
+    }
+    return `${tabs(b.tabs || [cmds[cmds.length - 1] || "zsh", "logs"])}<div class="abs out" style="left:120px;top:140px;width:1680px">${rows}</div>`; },
+  caption: (b) => `${tabs(b.tabs || ["camera", BEATS.name])}
+    <div class="cam" style="left:0;right:0;top:64px;bottom:150px"><div class="head"></div><div class="body"></div><div class="lbl"><b>●</b> REC talking head</div></div>
+    <div class="status">▶ ${typ(.3, low(b.text) + ".")}<span class="cur"></span>${b.hint ? `<small data-in=".8" data-fx="show">${esc(b.hint)}</small>` : ""}</div>`,
+  outro: (b) => {
+    const cm = b.cmds || [], t1 = .3 + (cm[0] || "").length / 24;
+    return `${tabs(b.tabs || ["~/" + BEATS.name])}
+    <div class="abs out" style="left:140px;top:250px;font-size:56px;line-height:1.5">
+      ${cm[0] ? `<div><span class="acc">$</span> ${typ(.3, cm[0])}<span class="cur"></span></div>
+      <div data-in="${t1 + .3}" data-fx="show"><span class="hi">★ starred</span> <span style="color:var(--muted)">thanks.</span><span class="cur"></span></div>` : ""}
+      ${cm[1] ? `<div style="margin-top:50px"><span class="acc">$</span> ${typ(t1 + .9, cm[1])}<span class="cur"></span></div>` : ""}
+    </div>
+    <div class="abs cmt" data-in="${t1 + 1}" data-fx="show" style="left:140px;bottom:90px;font-size:30px"># ${esc((b.links || []).slice(1).map(l => l[1]).join(" · "))}</div>`; },
+};
+const stage = document.getElementById("stage");
+const S = BEATS.beats.map((b, i) => {
+  const el = document.createElement("section"); el.className = "beat"; el.innerHTML = B[b.type](b, i); stage.appendChild(el);
+  const items = [...el.querySelectorAll("[data-in]")].map(e => ({ e, d: +e.dataset.in, fx: e.dataset.fx, text: e.dataset.text }));
+  const rows = [...el.querySelectorAll(".tr[data-sel]")];
+  return { b, el, items, rows, curs: [...el.querySelectorAll(".cur")] };
+});
+["400 40px 'JetBrains Mono'", "700 40px 'JetBrains Mono'", "800 100px 'JetBrains Mono'"].forEach(f => document.fonts.load(f));
+
+/* ============ 4. HELPERS ============ */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+
+/* ============ 5. RENDER: pure function of t ============ */
+window.DURATION = BEATS.beats[BEATS.beats.length - 1].end;
+window.render = function (t) {
+  S.forEach(({ b, el, items, rows, curs }, i) => {
+    const last = i === S.length - 1, on = t >= b.start && (t < b.end || last);
+    el.style.display = on ? "block" : "none"; if (!on) return;          // tab switch = hard cut
+    const u = t - b.start;
+    let active = null, typing = false;
+    for (const it of items) {
+      if (it.fx === "type") {
+        const n = Math.floor(clamp((u - it.d) * 24, 0, it.text.length));
+        it.e.textContent = it.text.slice(0, n);
+        const line = it.e.closest(".out>div") || it.e.closest(".big,.status,.cmt");
+        if (line && line.closest(".out")) line.style.visibility = u >= it.d - .2 ? "visible" : "hidden";
+        if (u >= it.d - .2) { active = line; typing = typing || n < it.text.length; }
+      } else {
+        const v = u >= it.d; it.e.style.visibility = v ? "visible" : "hidden";
+        if (v && it.e.querySelector(".cur")) active = it.e;
+      }
+    }
+    // selection bar steps down one row every 0.35s until it reaches the accent row
+    if (rows.length) {
+      const target = Math.max(0, rows.findIndex(r => r.dataset.sel === "1"));
+      const k = u < 1.9 ? -1 : Math.min(target, Math.floor((u - 1.9) / .35));
+      rows.forEach((r, j) => r.classList.toggle("sel", j === k));
+    }
+    // one cursor: on the latest line; solid while typing, stepped blink when idle
+    curs.forEach(c => { const mine = active && (c.parentNode === active || c.closest(".big,.status") === active);
+      c.style.visibility = mine && (typing || Math.floor(t * 2) % 2 === 0) ? "visible" : "hidden"; });
+  });
+};
+window.render(0);
+</script>
+</body></html>
