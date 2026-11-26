@@ -41,13 +41,12 @@ Then you record yourself reading `SCRIPT.md`, swap your take in for the placehol
 
 ## Styles
 
-Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Four more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger, Prompt and Slab render the same sample beats. Details are in [the style guide](skills/video-basic/references/style.md#styles).
+Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Three more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger and Prompt render the same sample beats. Details are in [the style guide](skills/video-basic/references/style.md#styles).
 
 | Style | Use it for | Still |
 |---|---|---|
 | **Ledger**: flat editorial | Tutorials, walkthroughs, explainers | ![Ledger](docs/styles/ledger.jpg) |
 | **Prompt**: terminal-first | CLI tools, release notes, changelogs | ![Prompt](docs/styles/prompt.jpg) |
-| **Slab**: bold kinetic type | 15–45s social clips and teasers | ![Slab](docs/styles/slab.jpg) |
 | **Walkthrough**: step-by-step how-to | Settings guides, setup videos, one action per step | ![Walkthrough](docs/styles/walkthrough.jpg) |
 
 ## Editing your video

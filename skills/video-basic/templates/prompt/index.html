@@ -50,8 +50,8 @@ body.light{--bg:#EEF1EC;--panel:#FFFFFF;--line:#B9C4BA;--ink:#0C1410;--muted:#4A
 const THEME = new URLSearchParams(location.search).get("theme") || "dark";   // "dark" | "light"
 const BRAND = {};   // paste brand.json here; see references/style.md#brand
 
-// The shared sample beats: Ledger, Prompt and Slab all render this same content.
-// Wrap a word in *stars* to mark the emphasis word (Slab blocks it; Ledger and Prompt show it plain).
+// The shared sample beats: Ledger and Prompt both render this same content.
+// Wrap a word in *stars* to mark the emphasis word (Ledger and Prompt show it plain).
 const BEATS = {
   name: "homelab-nut",
   tagline: "Graceful UPS shutdown for every machine in your homelab.",
