@@ -21,7 +21,7 @@ Pick the existing style nearest to the board and copy its folder:
 cp -r skills/video-basic/templates/ledger skills/video-basic/templates/<style>
 ```
 
-Ledger is a good base for flat, typographic looks. `prompt` suits terminal-first looks, and `walkthrough` suits step-by-step how-tos with a phone. Use lowercase, one-word folder names.
+Ledger is a good base for flat, typographic looks. `prompt` suits terminal-first looks, `walkthrough` suits step-by-step how-tos with a phone, `orbit` suits a seeded, drifting background, `gameshow` suits question-and-reveal formats, and `market` suits data-heavy beats (charts, tickers, several speakers). Use lowercase, one-word folder names.
 
 Then change the identity of the copy, in the page itself:
 
@@ -69,7 +69,7 @@ Light accents are the usual failure: a colour that looks fine on dark often drop
 
 Content is data. The `BEATS` block at the top of the page holds the beats, and the `B` object builds one section per type (`title`, `card`, `terminal`, `caption`, `outro`). Edit `B` when the board needs a different layout: change the markup and the `data-in` delays, and add CSS classes next to the others.
 
-Keep the sample content the same as the sibling styles (the homelab-nut beats) so the looks compare like for like. A style that needs a new beat type, like Walkthrough's `step`, adds its own builder and its own sample.
+Keep the sample content the same as the sibling styles (the homelab-nut beats, which Ledger, Prompt and Orbit share) so the looks compare like for like. A style that needs new beat types, like Walkthrough's `step`, Gameshow's `question` and `reveal`, or Market's `chart` and `bars`, adds its own builders and its own sample.
 
 Rules that keep the page renderable:
 
