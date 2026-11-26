@@ -34,6 +34,7 @@ def main():
         b = launch(p)
         pg = b.new_page(viewport={"width": 1920, "height": 1080}, device_scale_factor=1)
         pg.goto(page_path.as_uri())
+        pg.evaluate("document.fonts.ready.then(() => true)")  # web fonts (the style templates) before frame 0
         pg.wait_for_timeout(600)
         if mode == "stills":
             out_dir = page_path.parent / "stills"
