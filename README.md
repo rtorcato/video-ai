@@ -54,14 +54,22 @@ Then you record yourself reading `SCRIPT.md`, swap your take in for the placehol
 
 Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Six more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger, Prompt and Orbit render the same sample beats; Market carries its own finance sample. Details are in [the style guide](skills/video-basic/references/style.md#styles). To add your own, see [Adding a new style](docs/ADD-A-STYLE.md).
 
-| Style | Use it for | Still |
-|---|---|---|
-| **Ledger**: flat editorial | Tutorials, walkthroughs, explainers | ![Ledger](docs/styles/ledger.jpg) |
-| **Prompt**: terminal-first | CLI tools, release notes, changelogs | ![Prompt](docs/styles/prompt.jpg) |
-| **Walkthrough**: step-by-step how-to | Settings guides, setup videos, one action per step | ![Walkthrough](docs/styles/walkthrough.jpg) |
-| **Gameshow**: quiz-show explainer | 30–60s quizzes and myth-busters, one question per feature | ![Gameshow](docs/styles/gameshow.jpg) |
-| **Orbit**: space mission control | Launches, feature drops and explainers for a younger audience, one stage per step | ![Orbit](docs/styles/orbit.jpg) |
-| **Market**: finance desk, three hosts | Market recaps, earnings breakdowns and money explainers, with live charts and a ticker on every beat | ![Market](docs/styles/market.jpg) |
+<table>
+<tr>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/ledger-dark.mp4"><img src="docs/styles/ledger.gif" alt="Ledger style preview"></a><br><b>Ledger</b>: flat editorial<br>Tutorials, walkthroughs, explainers<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/ledger-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/ledger-light.mp4">light</a></td>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/prompt-dark.mp4"><img src="docs/styles/prompt.gif" alt="Prompt style preview"></a><br><b>Prompt</b>: terminal-first<br>CLI tools, release notes, changelogs<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/prompt-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/prompt-light.mp4">light</a></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/walkthrough-dark.mp4"><img src="docs/styles/walkthrough.gif" alt="Walkthrough style preview"></a><br><b>Walkthrough</b>: step-by-step how-to<br>Settings guides, setup videos, one action per step<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/walkthrough-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/walkthrough-light.mp4">light</a></td>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/gameshow-dark.mp4"><img src="docs/styles/gameshow.gif" alt="Gameshow style preview"></a><br><b>Gameshow</b>: quiz-show explainer<br>30–60s quizzes and myth-busters, one question per feature<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/gameshow-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/gameshow-light.mp4">light</a></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/orbit-dark.mp4"><img src="docs/styles/orbit.gif" alt="Orbit style preview"></a><br><b>Orbit</b>: space mission control<br>Launches, feature drops and explainers for a younger audience, one stage per step<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/orbit-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/orbit-light.mp4">light</a></td>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/market-dark.mp4"><img src="docs/styles/market.gif" alt="Market style preview"></a><br><b>Market</b>: finance desk, three hosts<br>Market recaps, earnings breakdowns and money explainers, with live charts and a ticker on every beat<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/market-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/market-light.mp4">light</a></td>
+</tr>
+</table>
+
+Click a preview to play the full MP4 (dark and light themes are hosted outside the repo). The loops are 4 seconds of each style's dark theme.
 
 ## Editing your video
 
