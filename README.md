@@ -78,7 +78,7 @@ The skills use your project's own brand when they find one (`brand/`, `DESIGN.md
 
 ## Examples
 
-[`examples/`](examples/) has the sources of real videos made with these skills: a homelab-nut explainer (pro). The video-pro starter template is the [torcato.dev](https://torcato.dev) showcase.
+[`examples/`](examples/) has the sources of real videos made with these skills: a homelab-nut explainer (pro) and an iPhone theft-protection how-to (basic, Walkthrough style). The video-pro starter template is the [torcato.dev](https://torcato.dev) showcase.
 
 ## DaVinci Resolve gotchas
 
