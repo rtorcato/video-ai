@@ -11,7 +11,7 @@ It costs nothing to render: no Remotion license, no paid AI video credits. The v
 
 Read `references/style.md` before writing the page. It has the tokens, animation helpers, `render(t)` rules and pitfalls. `templates/index.html` is a complete working page to start from.
 
-**Other looks:** if the user asks for a different style, or the content suits one better, start from one of `templates/<style>/index.html` instead: `ledger` (flat editorial, tutorials), `prompt` (terminal-first, CLI tools and changelogs), `slab` (bold kinetic type, short social clips) or `walkthrough` (step-by-step phone how-tos). Each has dark and light themes and reads `brand.json`. You fill in its `BEATS` block rather than writing scenes. See [Styles](references/style.md#styles).
+**Other looks:** if the user asks for a different style, or the content suits one better, start from one of `templates/<style>/index.html` instead: `ledger` (flat editorial, tutorials), `prompt` (terminal-first, CLI tools and changelogs), `walkthrough` (step-by-step phone how-tos) `gameshow` (quiz-show explainer, short quizzes and myth-busters) `orbit` (space mission control, launches and feature drops for a younger audience) or `market` (finance desk with three hosts, charts and a stock ticker, for market recaps and money explainers). Market's camera windows are styled placeholders: in a real build, swap each window for that host's recorded footage. Each has dark and light themes and reads `brand.json`. You fill in its `BEATS` block rather than writing scenes. See [Styles](references/style.md#styles).
 
 **Needs:** Python 3 with `pip install playwright` (then `playwright install chromium`, or use an installed Chrome), and ffmpeg.
 

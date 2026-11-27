@@ -13,7 +13,7 @@ Read first:
 
 `templates/` is a complete working package source (a 75s portfolio showcase with ten beats). Start from it.
 
-**Other looks:** video-basic ships four more styles (`ledger`, `prompt`, `slab`, `walkthrough`) as `templates/<style>/index.html`; see [Styles](../video-basic/references/style.md#styles). They're single-layer pages. To use one here, keep this skill's page and its `LAYER` logic, including the window hole and the camera transform. Take the style's theme tokens, fonts, components and motion into the `gfx` and `cap` layers. In pip beats, lay the style's cards out in the 840px column beside the window.
+**Other looks:** video-basic ships six more styles (`ledger`, `prompt`, `walkthrough`, `gameshow`, `orbit`, `market`) as `templates/<style>/index.html`; see [Styles](../video-basic/references/style.md#styles). They're single-layer pages. To use one here, keep this skill's page and its `LAYER` logic, including the window hole and the camera transform. Take the style's theme tokens, fonts, components and motion into the `gfx` and `cap` layers. In pip beats, lay the style's cards out in the 840px column beside the window.
 
 **Needs:** Python 3 with `pip install playwright` (then `playwright install chromium`, or use an installed Chrome), ffmpeg, and DaVinci Resolve on the editing machine.
 

@@ -1,4 +1,15 @@
+<!-- brand-kit:banner:start -->
+<picture>
+  <source media="(max-width: 640px) and (prefers-color-scheme: light)" srcset="./brand/banner-mobile-light.png">
+  <source media="(max-width: 640px)" srcset="./brand/banner-mobile.png">
+  <source media="(prefers-color-scheme: light)" srcset="./brand/banner-light.png">
+  <img src="./brand/banner.png" alt="Explainer videos from HTML, rendered by your agent." width="1600">
+</picture>
+<!-- brand-kit:banner:end -->
+
 # video-ai
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" height="40">](https://buymeacoffee.com/rtorcato)
 
 Agent skills for making explainer and showcase videos for software projects: talking head + animated UI cards, the style of popular AI-tools YouTube channels. Built for Claude, works with any agent that reads `SKILL.md` skills.
 
@@ -41,7 +52,7 @@ Then you record yourself reading `SCRIPT.md`, swap your take in for the placehol
 
 ## Styles
 
-Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Four more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger, Prompt and Slab render the same sample beats. Details are in [the style guide](skills/video-basic/references/style.md#styles).
+Pick a look per video. The default is the gradient-and-white-cards style in the preview above. Six more ship as `video-basic` templates in [`skills/video-basic/templates/<style>/`](skills/video-basic/templates/), each with dark and light themes and `brand.json` support. Ledger, Prompt and Orbit render the same sample beats; Market carries its own finance sample. Details are in [the style guide](skills/video-basic/references/style.md#styles). To add your own, see [Adding a new style](docs/ADD-A-STYLE.md).
 
 <table>
 <tr>
@@ -49,8 +60,12 @@ Pick a look per video. The default is the gradient-and-white-cards style in the 
 <td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/prompt-dark.mp4"><img src="docs/styles/prompt.gif" alt="Prompt style preview"></a><br><b>Prompt</b>: terminal-first<br>CLI tools, release notes, changelogs<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/prompt-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/prompt-light.mp4">light</a></td>
 </tr>
 <tr>
-<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/slab-dark.mp4"><img src="docs/styles/slab.gif" alt="Slab style preview"></a><br><b>Slab</b>: bold kinetic type<br>15–45s social clips and teasers<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/slab-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/slab-light.mp4">light</a></td>
 <td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/walkthrough-dark.mp4"><img src="docs/styles/walkthrough.gif" alt="Walkthrough style preview"></a><br><b>Walkthrough</b>: step-by-step how-to<br>Settings guides, setup videos, one action per step<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/walkthrough-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/walkthrough-light.mp4">light</a></td>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/gameshow-dark.mp4"><img src="docs/styles/gameshow.gif" alt="Gameshow style preview"></a><br><b>Gameshow</b>: quiz-show explainer<br>30–60s quizzes and myth-busters, one question per feature<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/gameshow-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/gameshow-light.mp4">light</a></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/orbit-dark.mp4"><img src="docs/styles/orbit.gif" alt="Orbit style preview"></a><br><b>Orbit</b>: space mission control<br>Launches, feature drops and explainers for a younger audience, one stage per step<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/orbit-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/orbit-light.mp4">light</a></td>
+<td width="50%" valign="top"><a href="https://media.torcato.dev/video-ai/styles/market-dark.mp4"><img src="docs/styles/market.gif" alt="Market style preview"></a><br><b>Market</b>: finance desk, three hosts<br>Market recaps, earnings breakdowns and money explainers, with live charts and a ticker on every beat<br>Full video: <a href="https://media.torcato.dev/video-ai/styles/market-dark.mp4">dark</a> · <a href="https://media.torcato.dev/video-ai/styles/market-light.mp4">light</a></td>
 </tr>
 </table>
 
@@ -71,7 +86,7 @@ The skills use your project's own brand when they find one (`brand/`, `DESIGN.md
 
 ## Examples
 
-[`examples/`](examples/) has the sources of real videos made with these skills: a homelab-nut explainer (pro). The video-pro starter template is the [torcato.dev](https://torcato.dev) showcase.
+[`examples/`](examples/) has the sources of real videos made with these skills: a homelab-nut explainer (pro) and an iPhone theft-protection how-to (basic, Walkthrough style). The video-pro starter template is the [torcato.dev](https://torcato.dev) showcase.
 
 ## DaVinci Resolve gotchas
 
